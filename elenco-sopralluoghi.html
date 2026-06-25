@@ -542,6 +542,37 @@
       font-size: 0.92rem;
     }
 
+    .media-card img {
+      width: 100%;
+      max-height: 360px;
+      object-fit: contain;
+      display: block;
+      margin-top: 10px;
+      border-radius: 14px;
+      border: 1px solid #eef0f2;
+      background: #ffffff;
+    }
+
+    .media-card a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 38px;
+      margin-top: 10px;
+      padding: 8px 12px;
+      border-radius: 12px;
+      border: 1.5px solid rgba(49, 168, 67, 0.32);
+      background: var(--verde-extra-soft);
+      color: var(--verde-scuro);
+      font-size: 0.88rem;
+      font-weight: 900;
+      text-decoration: none;
+    }
+
+    .media-card.drawing {
+      grid-column: 1 / -1;
+    }
+
     footer {
       text-align: center;
       padding: 18px 16px 26px;
@@ -688,7 +719,7 @@
               <h2>Archivio sopralluoghi</h2>
               <p class="subtitle">
                 Qui trovi i sopralluoghi conclusi e salvati online. Puoi cercare una pratica,
-                aprire il dettaglio completo, ristampare i dati o preparare nuovamente l'email.
+                aprire il dettaglio completo, visualizzare foto e disegno, ristampare i dati o preparare nuovamente l'email.
               </p>
 
               <div id="connectionStatus" class="status-box">Caricamento sopralluoghi da Firebase...</div>
@@ -920,7 +951,7 @@
       `;
     }
 
-    function apriDettaglio(id) {
+    async function apriDettaglio(id) {
       const item = elenco.find((sopralluogo) => sopralluogo.id === id);
 
       if (!item) {
@@ -945,6 +976,23 @@
       const avviso = item.avvisoAumentoPotenza
         ? `<div class="warning-box">Avviso: la potenza impianto richiesta è superiore alla potenza impegnata del contatore. Il cliente deve fare richiesta di aumento di potenza del contatore. Spesa a carico del committente.</div>`
         : "";
+
+      detailView.innerHTML = `
+        <div class="status-box">Caricamento dettaglio, foto e disegno in corso...</div>
+      `;
+      listView.style.display = "none";
+      detailView.classList.add("active");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+
+      let mediaOnline = item.mediaOnline || {};
+
+      try {
+        mediaOnline = await caricaMediaSopralluogo(item.id);
+        item.mediaOnline = mediaOnline;
+      } catch (errore) {
+        console.error("Errore caricamento media:", errore);
+        mediaOnline = {};
+      }
 
       detailView.innerHTML = `
         <div class="detail-header">
@@ -1065,7 +1113,7 @@
           </div>
         </section>
 
-        ${creaSezioneMedia(item)}
+        ${creaSezioneMedia(item, mediaOnline)}
       `;
 
       document.getElementById("backToListButton").addEventListener("click", tornaElenco);
@@ -1077,38 +1125,95 @@
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
-    function creaSezioneMedia(item) {
-      const media = item.mediaLocale || {};
+    async function caricaMediaSopralluogo(id) {
+      const snapshot = await getDocs(collection(db, FIRESTORE_COLLECTION, id, "media"));
+      const media = {};
+
+      snapshot.forEach((documento) => {
+        const datiMedia = documento.data() || {};
+        media[documento.id] = {
+          id: documento.id,
+          tipo: datiMedia.tipo || "",
+          titolo: datiMedia.titolo || documento.id,
+          dataUrl: datiMedia.dataUrl || "",
+          dimensioneByte: datiMedia.dimensioneByte || 0,
+          aggiornatoIl: datiMedia.aggiornatoIl || null
+        };
+      });
+
+      return media;
+    }
+
+    function creaSezioneMedia(item, mediaOnline = {}) {
+      const mediaLocale = item.mediaLocale || {};
+
+      const righe = [
+        mediaRow("Foto tetto / area moduli", mediaOnline.fotoTetto, mediaLocale.fotoTetto),
+        mediaRow("Foto contatore", mediaOnline.fotoContatore, mediaLocale.fotoContatore),
+        mediaRow("Foto quadro elettrico", mediaOnline.fotoQuadro, mediaLocale.fotoQuadro),
+        mediaRow("Foto area inverter", mediaOnline.fotoInverter, mediaLocale.fotoInverter),
+        mediaRow("Foto accesso al tetto", mediaOnline.fotoAccesso, mediaLocale.fotoAccesso),
+        mediaRow("Foto ombreggiamenti / ostacoli", mediaOnline.fotoOmbreggiamenti, mediaLocale.fotoOmbreggiamenti),
+        mediaRow("Disegno / schema", mediaOnline.disegno, mediaLocale.disegno, true)
+      ].join("");
+
+      const mediaPresenti = Object.values(mediaOnline).filter((item) => item && item.dataUrl).length;
+      const messaggio = mediaPresenti > 0
+        ? `Foto e disegno caricati da Firebase: ${mediaPresenti} elemento/i disponibili.`
+        : "Nessuna foto o disegno online trovato. Se il sopralluogo è stato creato prima dell'aggiornamento, i media potrebbero essere presenti solo sul dispositivo originario.";
 
       return `
         <section class="section">
           <div class="section-header"><h3>Foto e disegno</h3></div>
           <div class="section-body">
-            <div class="status-box">
-              In questa versione le foto e il disegno non vengono salvati online perché Firebase Storage non è attivo.
-              Qui viene indicato solo se erano presenti sul dispositivo al momento del salvataggio.
-            </div>
+            <div class="status-box">${escapeHtml(messaggio)}</div>
             <div class="media-grid">
-              ${mediaRow("Foto tetto / area moduli", media.fotoTetto)}
-              ${mediaRow("Foto contatore", media.fotoContatore)}
-              ${mediaRow("Foto quadro elettrico", media.fotoQuadro)}
-              ${mediaRow("Foto area inverter", media.fotoInverter)}
-              ${mediaRow("Foto accesso tetto", media.fotoAccesso)}
-              ${mediaRow("Foto ombreggiamenti", media.fotoOmbreggiamenti)}
-              ${mediaRow("Disegno / schema", media.disegno)}
+              ${righe}
             </div>
           </div>
         </section>
       `;
     }
 
-    function mediaRow(label, presente) {
+    function mediaRow(label, media, presenteLocale = false, isDrawing = false) {
+      const haMediaOnline = media && isSafeDataUrl(media.dataUrl);
+      const className = isDrawing ? "media-card drawing" : "media-card";
+
+      if (haMediaOnline) {
+        return `
+          <div class="${className}">
+            <strong>${escapeHtml(media.titolo || label)}</strong>
+            <span>Salvato online su Firebase${media.dimensioneByte ? ` - ${formattaByte(media.dimensioneByte)}` : ""}</span>
+            <img src="${media.dataUrl}" alt="${escapeHtml(media.titolo || label)}">
+            <a href="${media.dataUrl}" target="_blank" rel="noopener">Apri immagine</a>
+          </div>
+        `;
+      }
+
       return `
-        <div class="media-card">
+        <div class="${className}">
           <strong>${escapeHtml(label)}</strong>
-          <span>${presente ? "Presente sul dispositivo di compilazione" : "Non presente"}</span>
+          <span>${presenteLocale ? "Presente nella vecchia pratica, ma non caricato online" : "Non presente"}</span>
         </div>
       `;
+    }
+
+    function isSafeDataUrl(value) {
+      return typeof value === "string" && /^data:image\/(png|jpeg|jpg|webp);base64,/i.test(value);
+    }
+
+    function formattaByte(value) {
+      const numero = Number(value) || 0;
+
+      if (numero < 1024) {
+        return `${numero} B`;
+      }
+
+      if (numero < 1024 * 1024) {
+        return `${(numero / 1024).toFixed(1)} KB`;
+      }
+
+      return `${(numero / (1024 * 1024)).toFixed(2)} MB`;
     }
 
     function tornaElenco() {
@@ -1134,8 +1239,10 @@
       }
 
       try {
+        const mediaSnapshot = await getDocs(collection(db, FIRESTORE_COLLECTION, id, "media"));
+        await Promise.all(mediaSnapshot.docs.map((mediaDoc) => deleteDoc(mediaDoc.ref)));
         await deleteDoc(doc(db, FIRESTORE_COLLECTION, id));
-        alert("Sopralluogo eliminato.");
+        alert("Sopralluogo e media collegati eliminati.");
 
         if (dettaglioCorrente && dettaglioCorrente.id === id) {
           tornaElenco();
