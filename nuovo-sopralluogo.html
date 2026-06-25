@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#31a843">
+  <title>Nuovo sopralluogo - Flora</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <div class="app">
+    <header class="app-header compact">
+      <img src="assets/logo-flora.png" alt="Logo Flora" class="logo">
+      <h1>Nuovo sopralluogo</h1>
+      <p>Compilazione digitale scheda sopralluogo</p>
+    </header>
+
+    <main class="form-main">
+      <div class="container">
+        <div class="top-actions">
+          <a href="index.html" class="back-button">‹ Torna alla Home</a>
+          <div class="status-pill"><span class="badge-dot"></span>Bozza locale attiva</div>
+        </div>
+
+        <section class="form-card glass-card">
+          <div class="form-content">
+            <div class="page-title">
+              <div class="badge"><span class="badge-dot"></span>Sopralluogo fotovoltaico</div>
+              <h2>Scheda sopralluogo</h2>
+              <p>
+                Compila la pratica in modo guidato. I dati vengono salvati sul dispositivo
+                e possono essere consultati prima della trasmissione al tecnico incaricato.
+              </p>
+            </div>
+
+            <div class="progress-box" id="progressBox">
+              <button class="progress-step active" type="button" data-step="0">1. Dati</button>
+              <button class="progress-step" type="button" data-step="1">2. Impianto</button>
+              <button class="progress-step" type="button" data-step="2">3. Tecnico</button>
+              <button class="progress-step" type="button" data-step="3">4. Foto e disegno</button>
+              <button class="progress-step" type="button" data-step="4">5. Riepilogo</button>
+            </div>
+
+            <form id="sopralluogoForm" autocomplete="on">
+              <div class="step-panel active" data-panel="0">
+                <section class="section">
+                  <div class="section-header"><h3>Dati pratica</h3></div>
+                  <div class="section-body">
+                    <div class="grid-3">
+                      <div class="field">
+                        <label for="tecnico">Tecnico compilatore</label>
+                        <input type="text" id="tecnico" name="tecnico" placeholder="Nome tecnico">
+                      </div>
+                      <div class="field">
+                        <label for="data">Data sopralluogo</label>
+                        <input type="date" id="data" name="data">
+                      </div>
+                      <div class="field">
+                        <label for="protocollo">Protocollo N.</label>
+                        <input type="text" id="protocollo" name="protocollo" value="IT-FL-" placeholder="IT-FL-">
+                      </div>
+                    </div>
+
+                    <div class="grid-2">
+                      <div class="field">
+                        <label for="referente">Referente</label>
+                        <input type="text" id="referente" name="referente" placeholder="Referente richiesta">
+                      </div>
+                      <div class="field">
+                        <label for="dataRicezione">Data ricezione</label>
+                        <input type="date" id="dataRicezione" name="dataRicezione">
+                      </div>
+                    </div>
+
+                    <div class="field">
+                      <label>Provenienza richiesta</label>
+                      <div class="choice-grid">
+                        <label class="choice-card"><input type="radio" name="provenienza" value="Passaparola">Passaparola</label>
+                        <label class="choice-card"><input type="radio" name="provenienza" value="Social Facebook">Social Facebook</label>
+                        <label class="choice-card"><input type="radio" name="provenienza" value="Social Instagram">Social Instagram</label>
+                        <label class="choice-card"><input type="radio" name="provenienza" value="Google">Google</label>
+                        <label class="choice-card"><input type="radio" name="provenienza" value="TikTok">TikTok</label>
+                        <label class="choice-card"><input type="radio" name="provenienza" value="Whatsapp">Whatsapp</label>
+                        <label class="choice-card"><input type="radio" name="provenienza" value="Volantinaggio">Volantinaggio</label>
+                        <label class="choice-card"><input type="radio" name="provenienza" value="Call center">Call center</label>
+                        <label class="choice-card"><input type="radio" name="provenienza" value="Segnalatore">Segnalatore</label>
+                        <label class="choice-card"><input type="radio" name="provenienza" value="Punto Flora">Punto Flora</label>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                <section class="section">
+                  <div class="section-header"><h3>Committente e luogo di installazione</h3></div>
+                  <div class="section-body">
+                    <div class="grid-2">
+                      <div class="field">
+                        <label for="nomeCliente">Nome e Cognome</label>
+                        <input type="text" id="nomeCliente" name="nomeCliente" placeholder="Nome cliente">
+                      </div>
+                      <div class="field">
+                        <label for="telefono">Telefono</label>
+                        <input type="tel" id="telefono" name="telefono" placeholder="Numero telefono">
+                      </div>
+                    </div>
+
+                    <div class="grid-2">
+                      <div class="field">
+                        <label for="indirizzo">Indirizzo installazione</label>
+                        <input type="text" id="indirizzo" name="indirizzo" placeholder="Via, numero civico">
+                      </div>
+                      <div class="field">
+                        <label for="citta">Città</label>
+                        <input type="text" id="citta" name="citta" placeholder="Comune">
+                      </div>
+                    </div>
+
+                    <div class="field">
+                      <label>Geolocalizzazione luogo installazione</label>
+                      <div class="inline-actions">
+                        <button class="small-button primary" type="button" id="geoButton">Usa posizione attuale</button>
+                        <a id="mapsLink" class="small-button" href="#" target="_blank" rel="noopener" hidden>Apri su Maps</a>
+                      </div>
+                      <div class="grid-3">
+                        <div class="field">
+                          <label for="latitudine">Latitudine</label>
+                          <input type="text" id="latitudine" name="latitudine" readonly placeholder="Non rilevata">
+                        </div>
+                        <div class="field">
+                          <label for="longitudine">Longitudine</label>
+                          <input type="text" id="longitudine" name="longitudine" readonly placeholder="Non rilevata">
+                        </div>
+                        <div class="field">
+                          <label for="precisioneGps">Precisione GPS</label>
+                          <input type="text" id="precisioneGps" name="precisioneGps" readonly placeholder="-">
+                        </div>
+                      </div>
+                      <div class="note-box">
+                        La geolocalizzazione richiede il consenso del dispositivo. Su GitHub Pages funziona perché il sito è pubblicato in HTTPS.
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                <section class="section">
+                  <div class="section-header"><h3>Tipologia intervento e immobile</h3></div>
+                  <div class="section-body">
+                    <div class="field">
+                      <label>Tipologia immobile</label>
+                      <div class="choice-grid">
+                        <label class="choice-card"><input type="radio" name="tipologiaImmobile" value="Unifamiliare o Bifamiliare">Unifamiliare o Bifamiliare</label>
+                        <label class="choice-card"><input type="radio" name="tipologiaImmobile" value="Condominio o Plurifamiliare">Condominio o Plurifamiliare</label>
+                        <label class="choice-card"><input type="radio" name="tipologiaImmobile" value="Capannone agricolo">Capannone agricolo</label>
+                        <label class="choice-card"><input type="radio" name="tipologiaImmobile" value="Capannone industriale">Capannone industriale</label>
+                      </div>
+                    </div>
+                    <div class="field">
+                      <label>Stato immobile</label>
+                      <div class="choice-grid two">
+                        <label class="choice-card"><input type="radio" name="statoImmobile" value="Esistente">Esistente</label>
+                        <label class="choice-card"><input type="radio" name="statoImmobile" value="In costruzione">In costruzione</label>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              </div>
+
+              <div class="step-panel" data-panel="1">
+                <section class="section">
+                  <div class="section-header"><h3>Caratteristiche generali</h3></div>
+                  <div class="section-body">
+                    <div class="grid-2">
+                      <div class="field">
+                        <label for="potenzaRichiesta">Potenza impianto richiesta dal cliente - kWp</label>
+                        <input type="number" id="potenzaRichiesta" name="potenzaRichiesta" placeholder="Es. 6" step="0.01" inputmode="decimal">
+                      </div>
+                      <div class="field">
+                        <label>È richiesto anche l'accumulo?</label>
+                        <div class="choice-grid two">
+                          <label class="choice-card"><input type="radio" name="accumulo" value="No">No</label>
+                          <label class="choice-card"><input type="radio" name="accumulo" value="Sì">Sì</label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="field">
+                      <label>Uso dell'immobile</label>
+                      <div class="choice-grid">
+                        <label class="choice-card"><input type="radio" name="usoImmobile" value="Abitazione">Abitazione</label>
+                        <label class="choice-card"><input type="radio" name="usoImmobile" value="Ufficio">Ufficio</label>
+                        <label class="choice-card"><input type="radio" name="usoImmobile" value="Industria">Industria</label>
+                        <label class="choice-card"><input type="radio" name="usoImmobile" value="Commercio">Commercio</label>
+                        <label class="choice-card"><input type="radio" name="usoImmobile" value="Altro">Altro</label>
+                      </div>
+                    </div>
+                    <div class="field">
+                      <label for="usoAltro">Altro uso immobile</label>
+                      <input type="text" id="usoAltro" name="usoAltro" placeholder="Specificare se altro">
+                    </div>
+
+                    <div class="field">
+                      <label>Presenza di vincoli architettonici o paesaggistici</label>
+                      <div class="choice-grid two">
+                        <label class="choice-card"><input type="radio" name="vincoli" value="No">No</label>
+                        <label class="choice-card"><input type="radio" name="vincoli" value="Sì">Sì</label>
+                      </div>
+                      <div class="note-box">Verificare con il comune di appartenenza l'esistenza di vincoli desumibili dal certificato di destinazione urbanistica.</div>
+                    </div>
+
+                    <div class="field">
+                      <label>Il tetto è accessibile?</label>
+                      <div class="choice-grid two">
+                        <label class="choice-card"><input type="radio" name="tettoAccessibile" value="No">No</label>
+                        <label class="choice-card"><input type="radio" name="tettoAccessibile" value="Sì">Sì</label>
+                      </div>
+                    </div>
+
+                    <div class="field">
+                      <label>Accessibilità luogo installazione moduli</label>
+                      <div class="choice-grid">
+                        <label class="choice-card"><input type="radio" name="accessibilita" value="Scala interna">Scala interna</label>
+                        <label class="choice-card"><input type="radio" name="accessibilita" value="Scala esterna fissa">Scala esterna fissa</label>
+                        <label class="choice-card"><input type="radio" name="accessibilita" value="Scala esterna da fissare">Scala esterna da fissare</label>
+                        <label class="choice-card"><input type="radio" name="accessibilita" value="Impalcatura">Impalcatura</label>
+                        <label class="choice-card"><input type="radio" name="accessibilita" value="Cestello grande">Cestello grande</label>
+                      </div>
+                    </div>
+
+                    <div class="grid-3">
+                      <div class="field">
+                        <label>È necessaria una gru?</label>
+                        <div class="choice-grid two"><label class="choice-card"><input type="radio" name="gru" value="No">No</label><label class="choice-card"><input type="radio" name="gru" value="Sì">Sì</label></div>
+                      </div>
+                      <div class="field">
+                        <label>Cestello grande?</label>
+                        <div class="choice-grid two"><label class="choice-card"><input type="radio" name="cestelloGrande" value="No">No</label><label class="choice-card"><input type="radio" name="cestelloGrande" value="Sì">Sì</label></div>
+                      </div>
+                      <div class="field">
+                        <label>Cestello piccolo?</label>
+                        <div class="choice-grid two"><label class="choice-card"><input type="radio" name="cestelloPiccolo" value="No">No</label><label class="choice-card"><input type="radio" name="cestelloPiccolo" value="Sì">Sì</label></div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                <section class="section">
+                  <div class="section-header"><h3>Caratteristiche impianto elettrico</h3></div>
+                  <div class="section-body">
+                    <div class="grid-2">
+                      <div class="field">
+                        <label>Impianto elettrico conforme alla 37/08?</label>
+                        <div class="choice-grid two"><label class="choice-card"><input type="radio" name="conformita3708" value="No">No</label><label class="choice-card"><input type="radio" name="conformita3708" value="Sì">Sì</label></div>
+                      </div>
+                      <div class="field">
+                        <label>Impianto di terra</label>
+                        <div class="choice-grid two"><label class="choice-card"><input type="radio" name="impiantoTerra" value="Presente">Presente</label><label class="choice-card"><input type="radio" name="impiantoTerra" value="Assente">Assente</label></div>
+                      </div>
+                    </div>
+
+                    <div class="grid-2">
+                      <div class="field">
+                        <label>Protezione scariche atmosferiche</label>
+                        <div class="choice-grid two"><label class="choice-card"><input type="radio" name="scaricheAtmosferiche" value="Presente">Presente</label><label class="choice-card"><input type="radio" name="scaricheAtmosferiche" value="Assente">Assente</label></div>
+                      </div>
+                      <div class="field">
+                        <label for="potenzaImpiegata">Potenza impegnata contatore - kW</label>
+                        <input type="number" id="potenzaImpiegata" name="potenzaImpiegata" placeholder="Es. 3" step="0.01" inputmode="decimal">
+                      </div>
+                    </div>
+
+                    <div id="powerWarning" class="warning-box">
+                      Avviso: la potenza impianto richiesta è superiore alla potenza impegnata del contatore.
+                      Il cliente deve fare richiesta di aumento di potenza del contatore. Spesa a carico del committente.
+                    </div>
+
+                    <div class="field">
+                      <label for="consumoAnnuo">Consumo annuo in kWh</label>
+                      <input type="number" id="consumoAnnuo" name="consumoAnnuo" placeholder="Verificare su bollette" inputmode="numeric">
+                    </div>
+
+                    <div class="grid-2">
+                      <div class="field">
+                        <label for="posizioneContatore">Dove è posizionato il contatore elettrico?</label>
+                        <textarea id="posizioneContatore" name="posizioneContatore" placeholder="Descrivere posizione contatore"></textarea>
+                      </div>
+                      <div class="field">
+                        <label for="posizioneQuadro">Dove è posizionato il quadro elettrico?</label>
+                        <textarea id="posizioneQuadro" name="posizioneQuadro" placeholder="Descrivere posizione quadro"></textarea>
+                      </div>
+                    </div>
+
+                    <div class="field">
+                      <label>Spazio per un altro contatore</label>
+                      <div class="choice-grid two"><label class="choice-card"><input type="radio" name="spazioAltroContatore" value="No">No</label><label class="choice-card"><input type="radio" name="spazioAltroContatore" value="Sì">Sì</label></div>
+                    </div>
+                  </div>
+                </section>
+              </div>
+
+              <div class="step-panel" data-panel="2">
+                <section class="section">
+                  <div class="section-header"><h3>Generatore fotovoltaico, inverter, contatore</h3></div>
+                  <div class="section-body">
+                    <div class="grid-2">
+                      <div class="field"><label for="ipotesiInverter">Ipotesi posizionamento inverter</label><textarea id="ipotesiInverter" name="ipotesiInverter" placeholder="Descrivere posizione inverter"></textarea></div>
+                      <div class="field"><label for="posizioneQuadroAcFv">Posizione quadro AC FV</label><textarea id="posizioneQuadroAcFv" name="posizioneQuadroAcFv" placeholder="Descrivere posizione quadro AC FV"></textarea></div>
+                    </div>
+
+                    <div class="grid-3">
+                      <div class="field"><label for="distanzaModuli">Distanza dai moduli - m</label><input type="number" id="distanzaModuli" name="distanzaModuli" step="0.01" placeholder="Metri"></div>
+                      <div class="field"><label for="distanzaQuadroInverter">Distanza quadro generale-inverter - m</label><input type="number" id="distanzaQuadroInverter" name="distanzaQuadroInverter" step="0.01" placeholder="Metri"></div>
+                      <div class="field"><label for="distanzaContatoreQuadro">Distanza contatore-quadro generale - m</label><input type="number" id="distanzaContatoreQuadro" name="distanzaContatoreQuadro" step="0.01" placeholder="Metri"></div>
+                    </div>
+
+                    <div class="field"><label>Presenza di un locale dove riporre i materiali di cantiere</label><div class="choice-grid two"><label class="choice-card"><input type="radio" name="localeMateriali" value="No">No</label><label class="choice-card"><input type="radio" name="localeMateriali" value="Sì">Sì</label></div></div>
+
+                    <div class="field">
+                      <label>Sicurezza</label>
+                      <div class="choice-grid">
+                        <label class="choice-card"><input type="radio" name="sicurezza" value="Punti di ancoraggio">Punti di ancoraggio</label>
+                        <label class="choice-card"><input type="radio" name="sicurezza" value="Linea vita">Linea vita</label>
+                        <label class="choice-card"><input type="radio" name="sicurezza" value="Cestello">Cestello</label>
+                        <label class="choice-card"><input type="radio" name="sicurezza" value="Ponteggio">Ponteggio</label>
+                        <label class="choice-card"><input type="radio" name="sicurezza" value="Altro">Altro</label>
+                      </div>
+                    </div>
+                    <div class="field"><label for="sicurezzaAltro">Altro sicurezza</label><input type="text" id="sicurezzaAltro" name="sicurezzaAltro" placeholder="Specificare se altro"></div>
+                  </div>
+                </section>
+
+                <section class="section">
+                  <div class="section-header"><h3>Tipo di installazione e copertura</h3></div>
+                  <div class="section-body">
+                    <div class="field"><label>Tipo di installazione</label><div class="choice-grid"><label class="choice-card"><input type="radio" name="tipoInstallazione" value="Terreno">Terreno</label><label class="choice-card"><input type="radio" name="tipoInstallazione" value="Tetto">Tetto</label><label class="choice-card"><input type="radio" name="tipoInstallazione" value="Pensilina">Pensilina</label><label class="choice-card"><input type="radio" name="tipoInstallazione" value="Altro">Altro</label></div></div>
+                    <div class="field"><label for="tipoInstallazioneAltro">Altro tipo installazione</label><input type="text" id="tipoInstallazioneAltro" name="tipoInstallazioneAltro" placeholder="Specificare se altro"></div>
+
+                    <div class="field"><label>Tipo tetto</label><div class="choice-grid"><label class="choice-card"><input type="radio" name="tipoTetto" value="Tetto 1 falda">Tetto 1 falda</label><label class="choice-card"><input type="radio" name="tipoTetto" value="Tetto 2 falde">Tetto 2 falde</label><label class="choice-card"><input type="radio" name="tipoTetto" value="Tetto 3 falde">Tetto 3 falde</label><label class="choice-card"><input type="radio" name="tipoTetto" value="Tetto 4 falde">Tetto 4 falde</label><label class="choice-card"><input type="radio" name="tipoTetto" value="Tetto curvo">Tetto curvo</label><label class="choice-card"><input type="radio" name="tipoTetto" value="Tetto piano">Tetto piano</label></div></div>
+
+                    <div class="field"><label>Copertura</label><div class="choice-grid"><label class="choice-card"><input type="radio" name="copertura" value="Tegole">Tegole</label><label class="choice-card"><input type="radio" name="copertura" value="Ardesia">Ardesia</label><label class="choice-card"><input type="radio" name="copertura" value="Lamiera grecata">Lamiera grecata</label><label class="choice-card"><input type="radio" name="copertura" value="Lastra fibrocemento">Lastra fibrocemento</label><label class="choice-card"><input type="radio" name="copertura" value="Altro">Altro</label></div></div>
+                    <div class="field"><label for="coperturaAltro">Altro copertura</label><input type="text" id="coperturaAltro" name="coperturaAltro" placeholder="Specificare se altro"></div>
+
+                    <div class="grid-3">
+                      <div class="field"><label for="altezzaTettoPiano">Altezza tetto piano - m</label><input type="number" id="altezzaTettoPiano" name="altezzaTettoPiano" step="0.01" placeholder="Metri"></div>
+                      <div class="field"><label>Balaustra</label><div class="choice-grid two"><label class="choice-card"><input type="radio" name="balaustra" value="No">No</label><label class="choice-card"><input type="radio" name="balaustra" value="Sì">Sì</label></div></div>
+                      <div class="field"><label for="altezzaBalaustra">Altezza balaustra - cm</label><input type="number" id="altezzaBalaustra" name="altezzaBalaustra" step="0.01" placeholder="cm"></div>
+                    </div>
+
+                    <div class="field"><label>Sottocostruzione</label><div class="choice-grid"><label class="choice-card"><input type="radio" name="sottocostruzione" value="Legno">Legno</label><label class="choice-card"><input type="radio" name="sottocostruzione" value="Calcestruzzo">Calcestruzzo</label><label class="choice-card"><input type="radio" name="sottocostruzione" value="Acciaio">Acciaio</label><label class="choice-card"><input type="radio" name="sottocostruzione" value="Altro">Altro</label></div></div>
+                    <div class="field"><label for="sottocostruzioneAltro">Altro sottocostruzione</label><input type="text" id="sottocostruzioneAltro" name="sottocostruzioneAltro" placeholder="Specificare se altro"></div>
+
+                    <div class="grid-2">
+                      <div class="field"><label for="superficieUtilizzabile">Superficie utilizzabile - mq</label><input type="number" id="superficieUtilizzabile" name="superficieUtilizzabile" step="0.01" placeholder="A = mq"></div>
+                      <div class="field"><label for="ombreggiamenti">Possibili ombreggiamenti</label><textarea id="ombreggiamenti" name="ombreggiamenti" placeholder="Descrivere eventuali ombreggiamenti"></textarea></div>
+                    </div>
+                  </div>
+                </section>
+              </div>
+
+              <div class="step-panel" data-panel="3">
+                <section class="section">
+                  <div class="section-header"><h3>Foto sopralluogo</h3></div>
+                  <div class="section-body">
+                    <div class="note-box">Le foto vengono compresse e salvate nella bozza locale del dispositivo.</div>
+                    <div class="photo-grid">
+                      <div class="photo-card"><label for="fotoTetto">Foto tetto / area moduli</label><input type="file" id="fotoTetto" accept="image/*" capture="environment" data-preview="previewTetto" data-key="fotoTettoData"><div id="previewTetto" class="preview">Nessuna foto caricata</div></div>
+                      <div class="photo-card"><label for="fotoContatore">Foto contatore</label><input type="file" id="fotoContatore" accept="image/*" capture="environment" data-preview="previewContatore" data-key="fotoContatoreData"><div id="previewContatore" class="preview">Nessuna foto caricata</div></div>
+                      <div class="photo-card"><label for="fotoQuadro">Foto quadro elettrico</label><input type="file" id="fotoQuadro" accept="image/*" capture="environment" data-preview="previewQuadro" data-key="fotoQuadroData"><div id="previewQuadro" class="preview">Nessuna foto caricata</div></div>
+                      <div class="photo-card"><label for="fotoInverter">Foto area inverter</label><input type="file" id="fotoInverter" accept="image/*" capture="environment" data-preview="previewInverter" data-key="fotoInverterData"><div id="previewInverter" class="preview">Nessuna foto caricata</div></div>
+                      <div class="photo-card"><label for="fotoAccesso">Foto accesso al tetto</label><input type="file" id="fotoAccesso" accept="image/*" capture="environment" data-preview="previewAccesso" data-key="fotoAccessoData"><div id="previewAccesso" class="preview">Nessuna foto caricata</div></div>
+                      <div class="photo-card"><label for="fotoOmbreggiamenti">Foto ombreggiamenti / ostacoli</label><input type="file" id="fotoOmbreggiamenti" accept="image/*" capture="environment" data-preview="previewOmbreggiamenti" data-key="fotoOmbreggiamentiData"><div id="previewOmbreggiamenti" class="preview">Nessuna foto caricata</div></div>
+                    </div>
+                  </div>
+                </section>
+
+                <section class="section">
+                  <div class="section-header"><h3>Disegno e osservazioni</h3></div>
+                  <div class="section-body">
+                    <div class="draw-tools">
+                      <button class="small-button primary" type="button" id="saveDrawingButton">Salva disegno</button>
+                      <button class="small-button" type="button" id="clearDrawingButton">Pulisci disegno</button>
+                      <label for="spessorePenna">Spessore</label>
+                      <select id="spessorePenna"><option value="2">Fine</option><option value="4" selected>Medio</option><option value="7">Grande</option></select>
+                    </div>
+                    <div class="canvas-wrap"><canvas id="drawingCanvas"></canvas></div>
+                    <div class="field"><label for="osservazioni">Osservazioni</label><textarea id="osservazioni" name="osservazioni" placeholder="Inserire note, misure, criticità, indicazioni per l'ingegnere"></textarea></div>
+                  </div>
+                </section>
+              </div>
+
+              <div class="step-panel" data-panel="4">
+                <section class="section">
+                  <div class="section-header"><h3>Riepilogo pratica</h3></div>
+                  <div class="section-body">
+                    <div id="summaryWarning" class="warning-box">
+                      Avviso: la potenza impianto richiesta è superiore alla potenza impegnata del contatore.
+                      Il cliente deve fare richiesta di aumento di potenza del contatore. Spesa a carico del committente.
+                    </div>
+                    <div id="summaryBox" class="summary-box"></div>
+                    <div class="field"><label for="emailIngegnere">Email ingegnere</label><input type="email" id="emailIngegnere" name="emailIngegnere" placeholder="email@dominio.it"></div>
+                    <div class="inline-actions"><button class="small-button primary" type="button" id="emailButton">Prepara invio pratica</button></div>
+                    <div class="note-box">Il pulsante prepara una bozza email con i dati principali della pratica. La generazione automatica del PDF verrà collegata nella fase successiva.</div>
+                  </div>
+                </section>
+              </div>
+            </form>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <div class="sticky-actions">
+      <div class="sticky-inner">
+        <div class="sticky-left">
+          <button class="action-button danger" type="button" id="clearDraftButton">Pulisci</button>
+          <button class="action-button secondary" type="button" id="saveDraftButton">Salva bozza</button>
+        </div>
+        <div class="sticky-right">
+          <button class="action-button secondary" type="button" id="prevButton">Indietro</button>
+          <button class="action-button primary" type="button" id="nextButton">Avanti</button>
+        </div>
+      </div>
+    </div>
+
+    <footer>Flora Multiservice S.r.l. - App sopralluoghi</footer>
+  </div>
+
+  <script src="assets/js/sopralluogo.js"></script>
+</body>
+</html>
