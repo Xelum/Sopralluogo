@@ -3,24 +3,28 @@
 <head>
   <meta charset="UTF-8">
 
-  <!-- Fondamentale per smartphone e tablet -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-
   <meta name="theme-color" content="#31a843">
+
   <title>Flora - Sopralluoghi</title>
 
   <style>
     :root {
       --verde-flora: #31a843;
-      --verde-scuro: #278937;
-      --verde-chiaro: #eef9f0;
-      --sfondo: #f4f6f5;
+      --verde-scuro: #238534;
+      --verde-soft: #eaf8ee;
+      --verde-extra-soft: #f5fcf7;
       --bianco: #ffffff;
-      --testo: #1f1f1f;
-      --testo-secondario: #666666;
-      --bordo: #e2e2e2;
-      --ombra: 0 10px 30px rgba(0, 0, 0, 0.08);
-      --raggio: 22px;
+      --nero: #111111;
+      --testo: #1f2933;
+      --testo-soft: #667085;
+      --bordo: #e4e7ec;
+      --sfondo: #f3f6f4;
+      --ombra-card: 0 22px 60px rgba(16, 24, 40, 0.12);
+      --ombra-soft: 0 12px 30px rgba(49, 168, 67, 0.16);
+      --radius-xl: 30px;
+      --radius-lg: 22px;
+      --radius-md: 16px;
     }
 
     * {
@@ -37,50 +41,77 @@
     body {
       min-height: 100vh;
       font-family: Arial, Helvetica, sans-serif;
-      background: var(--sfondo);
       color: var(--testo);
+      background:
+        radial-gradient(circle at top left, rgba(49, 168, 67, 0.18), transparent 34%),
+        radial-gradient(circle at bottom right, rgba(49, 168, 67, 0.14), transparent 30%),
+        linear-gradient(135deg, #f8fbf9 0%, #eef3f0 100%);
+      overflow-x: hidden;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      border-radius: 999px;
+      pointer-events: none;
+      z-index: 0;
+      filter: blur(2px);
+    }
+
+    body::before {
+      width: 360px;
+      height: 360px;
+      top: 90px;
+      left: -160px;
+      background: rgba(49, 168, 67, 0.10);
+    }
+
+    body::after {
+      width: 420px;
+      height: 420px;
+      right: -190px;
+      bottom: -160px;
+      background: rgba(49, 168, 67, 0.12);
     }
 
     .app {
+      position: relative;
+      z-index: 1;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
 
     header {
-      background: var(--bianco);
-      padding: 22px 18px 18px;
+      padding: 28px 18px 22px;
       text-align: center;
-      border-bottom: 1px solid var(--bordo);
+      background: rgba(255, 255, 255, 0.76);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(228, 231, 236, 0.9);
     }
 
     .logo {
-      width: min(240px, 70vw);
+      width: min(240px, 68vw);
       height: auto;
       display: block;
-      margin: 0 auto 14px;
-    }
-
-    .logo-fallback {
-      display: none;
-      font-size: 34px;
-      font-weight: 800;
-      letter-spacing: 8px;
-      color: #111;
-      margin-bottom: 14px;
+      margin: 0 auto 16px;
+      object-fit: contain;
     }
 
     header h1 {
-      font-size: clamp(1.45rem, 3vw, 2.1rem);
+      font-size: clamp(1.55rem, 3vw, 2.15rem);
       color: var(--verde-flora);
-      font-weight: 800;
-      line-height: 1.2;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      line-height: 1.15;
     }
 
     header p {
       margin-top: 8px;
       font-size: clamp(0.95rem, 2vw, 1.05rem);
-      color: var(--testo-secondario);
+      color: var(--testo-soft);
     }
 
     main {
@@ -88,32 +119,74 @@
       width: 100%;
       display: flex;
       justify-content: center;
-      padding: 24px 16px;
+      align-items: flex-start;
+      padding: clamp(22px, 5vw, 54px) 16px;
     }
 
     .container {
       width: 100%;
-      max-width: 760px;
+      max-width: 820px;
     }
 
     .home-card {
-      background: var(--bianco);
-      border-radius: var(--raggio);
-      padding: clamp(22px, 4vw, 36px);
-      box-shadow: var(--ombra);
+      position: relative;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(255, 255, 255, 0.85);
+      border-radius: var(--radius-xl);
+      padding: clamp(24px, 4.5vw, 42px);
+      box-shadow: var(--ombra-card);
+    }
+
+    .home-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(120deg, rgba(49, 168, 67, 0.10), transparent 38%),
+        radial-gradient(circle at 92% 8%, rgba(49, 168, 67, 0.16), transparent 22%);
+      pointer-events: none;
+    }
+
+    .home-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      margin-bottom: 18px;
+      border-radius: 999px;
+      background: var(--verde-soft);
+      color: var(--verde-scuro);
+      font-size: 0.85rem;
+      font-weight: 800;
+    }
+
+    .badge-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--verde-flora);
+      box-shadow: 0 0 0 5px rgba(49, 168, 67, 0.14);
     }
 
     .home-card h2 {
-      font-size: clamp(1.35rem, 3vw, 1.75rem);
+      font-size: clamp(1.45rem, 3vw, 1.9rem);
       margin-bottom: 10px;
-      color: var(--testo);
+      color: var(--nero);
+      letter-spacing: -0.4px;
     }
 
     .subtitle {
-      font-size: clamp(0.95rem, 2vw, 1.05rem);
-      color: var(--testo-secondario);
-      line-height: 1.55;
-      margin-bottom: 28px;
+      max-width: 680px;
+      font-size: clamp(0.98rem, 2vw, 1.08rem);
+      color: var(--testo-soft);
+      line-height: 1.6;
+      margin-bottom: 30px;
     }
 
     .menu {
@@ -122,125 +195,206 @@
     }
 
     .menu-button {
+      position: relative;
       width: 100%;
-      min-height: 76px;
+      min-height: 86px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
-      padding: 20px 22px;
-      border-radius: 18px;
-      text-decoration: none;
-      border: 2px solid var(--verde-flora);
-      background: var(--verde-flora);
-      color: var(--bianco);
+      gap: 18px;
+      padding: 22px 24px;
+      border-radius: var(--radius-lg);
+      border: 2px solid transparent;
+      background: var(--bianco);
+      color: var(--verde-flora);
       cursor: pointer;
-      transition: transform 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+      text-align: left;
+      transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        background 0.18s ease,
+        border-color 0.18s ease;
       touch-action: manipulation;
+      font-family: inherit;
+    }
+
+    .menu-button.primary {
+      background: linear-gradient(135deg, var(--verde-flora), var(--verde-scuro));
+      color: var(--bianco);
+      box-shadow: var(--ombra-soft);
+    }
+
+    .menu-button.secondary {
+      border-color: rgba(49, 168, 67, 0.32);
+      background: rgba(255, 255, 255, 0.78);
+    }
+
+    .menu-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 32px rgba(16, 24, 40, 0.12);
     }
 
     .menu-button:active {
       transform: scale(0.98);
     }
 
-    .menu-button:hover {
-      background: var(--verde-scuro);
-      box-shadow: 0 8px 18px rgba(49, 168, 67, 0.22);
-    }
-
-    .menu-button.secondary {
-      background: var(--bianco);
-      color: var(--verde-flora);
-    }
-
     .menu-button.secondary:hover {
-      background: var(--verde-chiaro);
-      box-shadow: none;
+      background: var(--verde-extra-soft);
+      border-color: var(--verde-flora);
+    }
+
+    .menu-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    .menu-icon {
+      flex: 0 0 auto;
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      border-radius: 15px;
+      background: rgba(49, 168, 67, 0.12);
+      font-size: 1.35rem;
+    }
+
+    .primary .menu-icon {
+      background: rgba(255, 255, 255, 0.20);
     }
 
     .menu-text {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      text-align: left;
+      min-width: 0;
     }
 
     .menu-title {
-      font-size: clamp(1.1rem, 2.6vw, 1.35rem);
-      font-weight: 800;
+      display: block;
+      font-size: clamp(1.12rem, 2.4vw, 1.35rem);
+      font-weight: 900;
       line-height: 1.2;
+      letter-spacing: -0.2px;
     }
 
     .menu-description {
-      margin-top: 5px;
-      font-size: clamp(0.85rem, 2vw, 0.95rem);
-      font-weight: 400;
-      opacity: 0.9;
+      display: block;
+      margin-top: 6px;
+      font-size: clamp(0.86rem, 1.9vw, 0.98rem);
+      font-weight: 500;
       line-height: 1.35;
+      opacity: 0.88;
     }
 
     .arrow {
+      flex: 0 0 auto;
       font-size: 2rem;
-      line-height: 1;
       font-weight: 300;
+      line-height: 1;
+      opacity: 0.95;
+    }
+
+    .info-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .info-box {
+      padding: 15px;
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(228, 231, 236, 0.9);
+    }
+
+    .info-box strong {
+      display: block;
+      font-size: 0.92rem;
+      color: var(--nero);
+      margin-bottom: 4px;
+    }
+
+    .info-box span {
+      display: block;
+      font-size: 0.82rem;
+      color: var(--testo-soft);
+      line-height: 1.35;
     }
 
     footer {
       text-align: center;
-      padding: 18px 16px 24px;
+      padding: 18px 16px 26px;
       font-size: 0.85rem;
-      color: #777777;
+      color: #667085;
     }
 
-    /* Tablet */
-    @media (min-width: 768px) {
-      main {
-        padding: 38px 24px;
-      }
-
-      .menu {
-        gap: 18px;
-      }
-
-      .menu-button {
-        min-height: 86px;
-        padding: 24px 26px;
+    @media (max-width: 720px) {
+      .info-strip {
+        grid-template-columns: 1fr;
       }
     }
 
-    /* Smartphone piccoli */
-    @media (max-width: 420px) {
+    @media (max-width: 520px) {
       header {
-        padding: 18px 14px 16px;
+        padding: 22px 14px 18px;
+      }
+
+      .logo {
+        width: min(200px, 72vw);
+        margin-bottom: 12px;
       }
 
       main {
-        padding: 18px 12px;
+        padding: 18px 12px 24px;
       }
 
       .home-card {
-        border-radius: 18px;
+        border-radius: 24px;
+      }
+
+      .badge {
+        font-size: 0.78rem;
+        margin-bottom: 16px;
+      }
+
+      .subtitle {
+        margin-bottom: 24px;
       }
 
       .menu-button {
-        min-height: 72px;
+        min-height: 78px;
         padding: 18px;
-        border-radius: 16px;
+        border-radius: 18px;
+      }
+
+      .menu-left {
+        gap: 13px;
+      }
+
+      .menu-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 13px;
+        font-size: 1.18rem;
       }
 
       .menu-description {
         display: none;
       }
 
-      footer {
-        font-size: 0.78rem;
+      .arrow {
+        font-size: 1.75rem;
       }
     }
 
-    /* Schermi molto larghi */
-    @media (min-width: 1100px) {
-      .container {
-        max-width: 820px;
+    @media (max-width: 360px) {
+      .menu-icon {
+        display: none;
+      }
+
+      .menu-button {
+        padding: 18px 16px;
       }
     }
   </style>
@@ -251,14 +405,7 @@
   <div class="app">
 
     <header>
-      <img
-        src="logo-flora.png"
-        alt="Logo Flora"
-        class="logo"
-        onerror="this.style.display='none'; document.querySelector('.logo-fallback').style.display='block';"
-      >
-
-      <div class="logo-fallback">FLORA</div>
+      <img src="assets/logo-flora.png" alt="Logo Flora" class="logo">
 
       <h1>Sopralluoghi Flora</h1>
       <p>Gestione digitale delle schede sopralluogo</p>
@@ -266,42 +413,80 @@
 
     <main>
       <div class="container">
+
         <section class="home-card">
-          <h2>Menu Home</h2>
+          <div class="home-content">
 
-          <p class="subtitle">
-            Seleziona una funzione per iniziare. L'app è ottimizzata per l'utilizzo
-            da tablet e smartphone durante il sopralluogo.
-          </p>
+            <div class="badge">
+              <span class="badge-dot"></span>
+              App sopralluoghi fotovoltaico
+            </div>
 
-          <nav class="menu" aria-label="Menu principale">
+            <h2>Menu Home</h2>
 
-            <a href="#" class="menu-button" onclick="nuovoSopralluogo()">
-              <span class="menu-text">
-                <span class="menu-title">Nuovo sopralluogo</span>
-                <span class="menu-description">Crea una nuova scheda sopralluogo</span>
-              </span>
-              <span class="arrow">›</span>
-            </a>
+            <p class="subtitle">
+              Seleziona una funzione per iniziare. L'app è pensata per accompagnare
+              il tecnico durante il sopralluogo, da tablet o smartphone, con una
+              compilazione semplice e ordinata.
+            </p>
 
-            <a href="#" class="menu-button secondary" onclick="elencoSopralluoghi()">
-              <span class="menu-text">
-                <span class="menu-title">Elenco sopralluoghi</span>
-                <span class="menu-description">Consulta le bozze e le pratiche salvate</span>
-              </span>
-              <span class="arrow">›</span>
-            </a>
+            <nav class="menu" aria-label="Menu principale">
 
-            <a href="#" class="menu-button secondary" onclick="impostazioni()">
-              <span class="menu-text">
-                <span class="menu-title">Impostazioni</span>
-                <span class="menu-description">Gestisci dati aziendali e preferenze</span>
-              </span>
-              <span class="arrow">›</span>
-            </a>
+              <button class="menu-button primary" onclick="nuovoSopralluogo()">
+                <span class="menu-left">
+                  <span class="menu-icon">＋</span>
+                  <span class="menu-text">
+                    <span class="menu-title">Nuovo sopralluogo</span>
+                    <span class="menu-description">Crea una nuova scheda sopralluogo</span>
+                  </span>
+                </span>
+                <span class="arrow">›</span>
+              </button>
 
-          </nav>
+              <button class="menu-button secondary" onclick="elencoSopralluoghi()">
+                <span class="menu-left">
+                  <span class="menu-icon">▦</span>
+                  <span class="menu-text">
+                    <span class="menu-title">Elenco sopralluoghi</span>
+                    <span class="menu-description">Consulta bozze e pratiche salvate</span>
+                  </span>
+                </span>
+                <span class="arrow">›</span>
+              </button>
+
+              <button class="menu-button secondary" onclick="impostazioni()">
+                <span class="menu-left">
+                  <span class="menu-icon">⚙</span>
+                  <span class="menu-text">
+                    <span class="menu-title">Impostazioni</span>
+                    <span class="menu-description">Gestisci preferenze e dati aziendali</span>
+                  </span>
+                </span>
+                <span class="arrow">›</span>
+              </button>
+
+            </nav>
+
+            <div class="info-strip">
+              <div class="info-box">
+                <strong>Uso da tablet</strong>
+                <span>Interfaccia grande e comoda per il sopralluogo.</span>
+              </div>
+
+              <div class="info-box">
+                <strong>Bozze locali</strong>
+                <span>Pronta per salvare le pratiche sul dispositivo.</span>
+              </div>
+
+              <div class="info-box">
+                <strong>Versione 1.0</strong>
+                <span>Base pronta per moduli, foto, disegni e PDF.</span>
+              </div>
+            </div>
+
+          </div>
         </section>
+
       </div>
     </main>
 
@@ -313,23 +498,20 @@
 
   <script>
     function nuovoSopralluogo() {
-      alert("Prossimo step: apertura della pagina per creare un nuovo sopralluogo.");
-
-      // Quando creeremo la pagina useremo:
+      alert("Prossimo step: creeremo la pagina per avviare un nuovo sopralluogo.");
+      // In futuro:
       // window.location.href = "nuovo-sopralluogo.html";
     }
 
     function elencoSopralluoghi() {
-      alert("Prossimo step: elenco dei sopralluoghi salvati.");
-
-      // Quando creeremo la pagina useremo:
+      alert("Prossimo step: mostreremo l'elenco dei sopralluoghi salvati.");
+      // In futuro:
       // window.location.href = "elenco-sopralluoghi.html";
     }
 
     function impostazioni() {
-      alert("Prossimo step: impostazioni dell'app.");
-
-      // Quando creeremo la pagina useremo:
+      alert("Prossimo step: apriremo la pagina impostazioni.");
+      // In futuro:
       // window.location.href = "impostazioni.html";
     }
   </script>
