@@ -2,769 +2,854 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#31a843">
-
   <title>Nuovo sopralluogo - Flora</title>
-
   <style>
-    :root {
-      --verde-flora: #31a843;
-      --verde-scuro: #238534;
-      --verde-soft: #eaf8ee;
-      --verde-extra-soft: #f5fcf7;
-      --bianco: #ffffff;
-      --nero: #111111;
-      --testo: #1f2933;
-      --testo-soft: #667085;
-      --bordo: #e4e7ec;
-      --sfondo: #f3f6f4;
-      --errore: #c62828;
-      --avviso: #b54708;
-      --avviso-bg: #fff7e6;
-      --ombra-card: 0 22px 60px rgba(16, 24, 40, 0.12);
-      --ombra-soft: 0 12px 30px rgba(49, 168, 67, 0.16);
-      --radius-xl: 30px;
-      --radius-lg: 22px;
-      --radius-md: 16px;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    html {
-      font-size: 16px;
-      scroll-behavior: smooth;
-    }
-
-    body {
-      min-height: 100vh;
-      font-family: Arial, Helvetica, sans-serif;
-      color: var(--testo);
-      background:
-        radial-gradient(circle at top left, rgba(49, 168, 67, 0.18), transparent 34%),
-        radial-gradient(circle at bottom right, rgba(49, 168, 67, 0.14), transparent 30%),
-        linear-gradient(135deg, #f8fbf9 0%, #eef3f0 100%);
-      overflow-x: hidden;
-    }
-
-    body::before,
-    body::after {
-      content: "";
-      position: fixed;
-      border-radius: 999px;
-      pointer-events: none;
-      z-index: 0;
-      filter: blur(2px);
-    }
-
-    body::before {
-      width: 360px;
-      height: 360px;
-      top: 90px;
-      left: -160px;
-      background: rgba(49, 168, 67, 0.10);
-    }
-
-    body::after {
-      width: 420px;
-      height: 420px;
-      right: -190px;
-      bottom: -160px;
-      background: rgba(49, 168, 67, 0.12);
-    }
-
-    .app {
-      position: relative;
-      z-index: 1;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-
-    header {
-      padding: 24px 18px 18px;
-      text-align: center;
-      background: rgba(255, 255, 255, 0.76);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border-bottom: 1px solid rgba(228, 231, 236, 0.9);
-    }
-
-    .logo {
-      width: min(220px, 64vw);
-      height: auto;
-      display: block;
-      margin: 0 auto 14px;
-      object-fit: contain;
-    }
-
-    header h1 {
-      font-size: clamp(1.45rem, 3vw, 2rem);
-      color: var(--verde-flora);
-      font-weight: 900;
-      letter-spacing: -0.5px;
-      line-height: 1.15;
-    }
-
-    header p {
-      margin-top: 8px;
-      font-size: clamp(0.95rem, 2vw, 1.05rem);
-      color: var(--testo-soft);
-    }
-
-    main {
-      flex: 1;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      padding: clamp(18px, 4vw, 44px) 16px 130px;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 1040px;
-    }
-
-    .top-actions {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      align-items: center;
-      margin-bottom: 18px;
-    }
-
-    .back-button {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      min-height: 44px;
-      padding: 10px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(49, 168, 67, 0.28);
-      background: rgba(255, 255, 255, 0.8);
-      color: var(--verde-scuro);
-      font-weight: 800;
-      text-decoration: none;
-      box-shadow: 0 8px 20px rgba(16, 24, 40, 0.06);
-    }
-
-    .status-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      min-height: 44px;
-      padding: 10px 14px;
-      border-radius: 999px;
-      background: var(--verde-soft);
-      color: var(--verde-scuro);
-      font-size: 0.9rem;
-      font-weight: 800;
-    }
-
-    .status-dot {
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
-      background: var(--verde-flora);
-      box-shadow: 0 0 0 5px rgba(49, 168, 67, 0.14);
-    }
-
-    .form-card {
-      position: relative;
-      overflow: hidden;
-      background: rgba(255, 255, 255, 0.93);
-      border: 1px solid rgba(255, 255, 255, 0.85);
-      border-radius: var(--radius-xl);
-      padding: clamp(22px, 4vw, 40px);
-      box-shadow: var(--ombra-card);
-    }
-
-    .form-card::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        linear-gradient(120deg, rgba(49, 168, 67, 0.09), transparent 38%),
-        radial-gradient(circle at 92% 8%, rgba(49, 168, 67, 0.14), transparent 22%);
-      pointer-events: none;
-    }
-
-    .form-content {
-      position: relative;
-      z-index: 1;
-    }
-
-    .page-title {
-      margin-bottom: 24px;
-    }
-
-    .page-title .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 12px;
-      margin-bottom: 16px;
-      border-radius: 999px;
-      background: var(--verde-soft);
-      color: var(--verde-scuro);
-      font-size: 0.85rem;
-      font-weight: 800;
-    }
-
-    .page-title h2 {
-      font-size: clamp(1.45rem, 3vw, 2rem);
-      color: var(--nero);
-      line-height: 1.15;
-      letter-spacing: -0.4px;
-      margin-bottom: 10px;
-    }
-
-    .page-title p {
-      max-width: 720px;
-      color: var(--testo-soft);
-      line-height: 1.6;
-      font-size: clamp(0.96rem, 2vw, 1.05rem);
-    }
-
-    .progress-box {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 10px;
-      margin: 24px 0 30px;
-    }
-
-    .progress-step {
-      padding: 12px;
-      border-radius: 14px;
-      background: rgba(255, 255, 255, 0.76);
-      border: 1px solid var(--bordo);
-      color: var(--testo-soft);
-      font-size: 0.82rem;
-      font-weight: 800;
-      text-align: center;
-      cursor: pointer;
-      user-select: none;
-    }
-
-    .progress-step.active {
-      background: var(--verde-flora);
-      border-color: var(--verde-flora);
-      color: var(--bianco);
-      box-shadow: var(--ombra-soft);
-    }
-
-    form {
-      display: grid;
-      gap: 22px;
-    }
-
-    .step-panel {
-      display: none;
-      gap: 22px;
-    }
-
-    .step-panel.active {
-      display: grid;
-    }
-
-    .section {
-      background: rgba(255, 255, 255, 0.82);
-      border: 1px solid rgba(228, 231, 236, 0.95);
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-    }
-
-    .section-header {
-      padding: 16px 18px;
-      background: linear-gradient(135deg, var(--verde-flora), var(--verde-scuro));
-      color: var(--bianco);
-    }
-
-    .section-header h3 {
-      font-size: clamp(1.05rem, 2.2vw, 1.25rem);
-      line-height: 1.2;
-    }
-
-    .section-body {
-      padding: 18px;
-      display: grid;
-      gap: 18px;
-    }
-
-    .grid-2 {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 16px;
-    }
-
-    .grid-3 {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-    }
-
-    .field {
-      display: grid;
-      gap: 7px;
-    }
-
-    label {
-      font-size: 0.92rem;
-      font-weight: 800;
-      color: var(--testo);
-    }
-
-    input,
-    textarea,
-    select {
-      width: 100%;
-      min-height: 48px;
-      padding: 12px 13px;
-      border: 1.5px solid var(--bordo);
-      border-radius: 14px;
-      background: var(--bianco);
-      color: var(--testo);
-      font-size: 1rem;
-      font-family: inherit;
-      outline: none;
-      transition: border-color 0.18s ease, box-shadow 0.18s ease;
-    }
-
-    textarea {
-      min-height: 96px;
-      resize: vertical;
-      line-height: 1.45;
-    }
-
-    input:focus,
-    textarea:focus,
-    select:focus {
-      border-color: var(--verde-flora);
-      box-shadow: 0 0 0 4px rgba(49, 168, 67, 0.12);
-    }
-
-    .checkbox-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-    }
-
-    .check-card {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      min-height: 52px;
-      padding: 12px;
-      border: 1.5px solid var(--bordo);
-      border-radius: 15px;
-      background: var(--bianco);
-      cursor: pointer;
-      transition: border-color 0.18s ease, background 0.18s ease, transform 0.18s ease;
-      font-weight: 700;
-      color: var(--testo);
-    }
-
-    .check-card:active {
-      transform: scale(0.98);
-    }
-
-    .check-card input {
-      width: 20px;
-      height: 20px;
-      min-height: auto;
-      accent-color: var(--verde-flora);
-      flex-shrink: 0;
-    }
-
-    .check-card:has(input:checked) {
-      border-color: var(--verde-flora);
-      background: var(--verde-extra-soft);
-      color: var(--verde-scuro);
-    }
-
-    .radio-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    .note-box {
-      padding: 14px;
-      border-radius: 16px;
-      background: var(--verde-extra-soft);
-      border: 1px solid rgba(49, 168, 67, 0.18);
-      color: var(--testo-soft);
-      font-size: 0.92rem;
-      line-height: 1.5;
-    }
-
-    .warning-box {
-      display: none;
-      padding: 15px;
-      border-radius: 16px;
-      background: var(--avviso-bg);
-      border: 1px solid rgba(181, 71, 8, 0.35);
-      color: var(--avviso);
-      font-size: 0.95rem;
-      font-weight: 800;
-      line-height: 1.5;
-    }
-
-    .warning-box.show {
-      display: block;
-    }
-
-    .inline-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      align-items: center;
-    }
-
-    .small-button {
-      min-height: 44px;
-      padding: 10px 14px;
-      border-radius: 14px;
-      border: 1.5px solid rgba(49, 168, 67, 0.35);
-      background: var(--bianco);
-      color: var(--verde-scuro);
-      font-weight: 900;
-      cursor: pointer;
-      font-family: inherit;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .small-button.primary {
-      background: var(--verde-flora);
-      color: var(--bianco);
-      border-color: var(--verde-flora);
-    }
-
-    .photo-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 16px;
-    }
-
-    .photo-card {
-      display: grid;
-      gap: 10px;
-      padding: 14px;
-      border-radius: 18px;
-      background: var(--bianco);
-      border: 1.5px solid var(--bordo);
-    }
-
-    .photo-card input {
-      padding: 10px;
-    }
-
-    .preview {
-      min-height: 130px;
-      border-radius: 14px;
-      border: 1.5px dashed rgba(49, 168, 67, 0.35);
-      background: var(--verde-extra-soft);
-      display: grid;
-      place-items: center;
-      overflow: hidden;
-      color: var(--testo-soft);
-      text-align: center;
-      font-size: 0.9rem;
-      padding: 10px;
-    }
-
-    .preview img {
-      width: 100%;
-      height: auto;
-      display: block;
-      border-radius: 12px;
-    }
-
-    .draw-tools {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-
-    .canvas-wrap {
-      width: 100%;
-      overflow: hidden;
-      border-radius: 18px;
-      border: 1.5px solid var(--bordo);
-      background: var(--bianco);
-    }
-
-    #drawingCanvas {
-      display: block;
-      width: 100%;
-      height: 360px;
-      touch-action: none;
-      background-color: #ffffff;
-      background-image:
-        linear-gradient(#d9dee3 1px, transparent 1px),
-        linear-gradient(90deg, #d9dee3 1px, transparent 1px);
-      background-size: 24px 24px;
-    }
-
-    .summary-box {
-      display: grid;
-      gap: 12px;
-      padding: 16px;
-      border-radius: 18px;
-      border: 1.5px solid var(--bordo);
-      background: var(--bianco);
-    }
-
-    .summary-row {
-      display: grid;
-      grid-template-columns: 240px 1fr;
-      gap: 12px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid #eef0f2;
-      font-size: 0.95rem;
-      line-height: 1.4;
-    }
-
-    .summary-row:last-child {
-      border-bottom: none;
-      padding-bottom: 0;
-    }
-
-    .summary-row strong {
-      color: var(--nero);
-    }
-
-    .sticky-actions {
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      z-index: 10;
-      padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
-      background: rgba(255, 255, 255, 0.82);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border-top: 1px solid rgba(228, 231, 236, 0.95);
-    }
-
-    .sticky-inner {
-      width: 100%;
-      max-width: 1040px;
-      margin: 0 auto;
-      display: flex;
-      gap: 12px;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .sticky-left,
-    .sticky-right {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-    }
-
-    .action-button {
-      min-height: 50px;
-      padding: 12px 18px;
-      border-radius: 16px;
-      border: 2px solid transparent;
-      cursor: pointer;
-      font-family: inherit;
-      font-size: 1rem;
-      font-weight: 900;
-      transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
-    }
-
-    .action-button:active {
-      transform: scale(0.98);
-    }
-
-    .action-button.primary {
-      background: linear-gradient(135deg, var(--verde-flora), var(--verde-scuro));
-      color: var(--bianco);
-      box-shadow: var(--ombra-soft);
-    }
-
-    .action-button.secondary {
-      background: var(--bianco);
-      color: var(--verde-scuro);
-      border-color: rgba(49, 168, 67, 0.35);
-    }
-
-    .action-button.danger {
-      background: #fff5f5;
-      color: var(--errore);
-      border-color: #ffc9c9;
-    }
-
-    footer {
-      text-align: center;
-      padding: 18px 16px 26px;
-      font-size: 0.85rem;
-      color: #667085;
-    }
-
-    @media (max-width: 900px) {
-      .progress-box {
-        grid-template-columns: repeat(3, 1fr);
-      }
-
-      .grid-3,
-      .checkbox-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .photo-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 620px) {
-      header {
-        padding: 20px 14px 16px;
-      }
-
-      .logo {
-        width: min(190px, 70vw);
-      }
-
-      main {
-        padding: 16px 12px 160px;
-      }
-
-      .top-actions {
-        align-items: stretch;
-        flex-direction: column;
-      }
-
-      .back-button,
-      .status-pill {
-        justify-content: center;
-      }
-
-      .form-card {
-        border-radius: 24px;
-        padding: 20px 14px;
-      }
-
-      .grid-2,
-      .grid-3,
-      .checkbox-grid,
-      .progress-box {
-        grid-template-columns: 1fr;
-      }
-
-      .section-body {
-        padding: 15px;
-      }
-
-      .sticky-inner {
-        display: grid;
-        grid-template-columns: 1fr;
-      }
-
-      .sticky-left,
-      .sticky-right {
-        display: grid;
-        grid-template-columns: 1fr;
-      }
-
-      .action-button {
-        width: 100%;
-      }
-
-      #drawingCanvas {
-        height: 320px;
-      }
-
-      .summary-row {
-        grid-template-columns: 1fr;
-        gap: 4px;
-      }
-    }
+:root {
+  --verde-flora: #31a843;
+  --verde-scuro: #238534;
+  --verde-soft: #eaf8ee;
+  --verde-extra-soft: #f5fcf7;
+  --bianco: #ffffff;
+  --nero: #111111;
+  --testo: #1f2933;
+  --testo-soft: #667085;
+  --bordo: #e4e7ec;
+  --rosso: #b42318;
+  --rosso-soft: #fff4f2;
+  --giallo: #b54708;
+  --giallo-soft: #fff7e6;
+  --ombra-card: 0 22px 60px rgba(16, 24, 40, 0.12);
+  --ombra-soft: 0 12px 30px rgba(49, 168, 67, 0.16);
+  --radius-xl: 30px;
+  --radius-lg: 22px;
+  --radius-md: 16px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  font-family: Arial, Helvetica, sans-serif;
+  color: var(--testo);
+  background:
+    radial-gradient(circle at top left, rgba(49, 168, 67, 0.18), transparent 34%),
+    radial-gradient(circle at bottom right, rgba(49, 168, 67, 0.14), transparent 30%),
+    linear-gradient(135deg, #f8fbf9 0%, #eef3f0 100%);
+  overflow-x: hidden;
+}
+
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  border-radius: 999px;
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(2px);
+}
+
+body::before {
+  width: 360px;
+  height: 360px;
+  top: 90px;
+  left: -160px;
+  background: rgba(49, 168, 67, 0.10);
+}
+
+body::after {
+  width: 420px;
+  height: 420px;
+  right: -190px;
+  bottom: -160px;
+  background: rgba(49, 168, 67, 0.12);
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.app {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-header {
+  padding: 28px 18px 22px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.76);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(228, 231, 236, 0.9);
+}
+
+.app-header.compact {
+  padding: 24px 18px 18px;
+}
+
+.logo {
+  width: min(240px, 68vw);
+  height: auto;
+  display: block;
+  margin: 0 auto 16px;
+  object-fit: contain;
+}
+
+.compact .logo {
+  width: min(220px, 64vw);
+  margin-bottom: 14px;
+}
+
+.app-header h1 {
+  font-size: clamp(1.55rem, 3vw, 2.15rem);
+  color: var(--verde-flora);
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  line-height: 1.15;
+}
+
+.app-header p {
+  margin-top: 8px;
+  font-size: clamp(0.95rem, 2vw, 1.05rem);
+  color: var(--testo-soft);
+}
+
+.home-main,
+.form-main {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: clamp(22px, 5vw, 54px) 16px;
+}
+
+.form-main {
+  padding: clamp(18px, 4vw, 44px) 16px 120px;
+}
+
+.container {
+  width: 100%;
+  max-width: 1040px;
+}
+
+.home-card {
+  width: 100%;
+  max-width: 820px;
+  margin: 0 auto;
+}
+
+.glass-card {
+  position: relative;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.93);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--ombra-card);
+}
+
+.glass-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(120deg, rgba(49, 168, 67, 0.09), transparent 38%),
+    radial-gradient(circle at 92% 8%, rgba(49, 168, 67, 0.14), transparent 22%);
+  pointer-events: none;
+}
+
+.home-card,
+.form-card {
+  padding: clamp(24px, 4.5vw, 42px);
+}
+
+.home-content,
+.form-content {
+  position: relative;
+  z-index: 1;
+}
+
+.badge,
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: var(--verde-soft);
+  color: var(--verde-scuro);
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
+.badge {
+  margin-bottom: 18px;
+}
+
+.badge-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--verde-flora);
+  box-shadow: 0 0 0 5px rgba(49, 168, 67, 0.14);
+}
+
+h2 {
+  font-size: clamp(1.45rem, 3vw, 1.9rem);
+  margin-bottom: 10px;
+  color: var(--nero);
+  letter-spacing: -0.4px;
+}
+
+.subtitle,
+.page-title p {
+  max-width: 760px;
+  font-size: clamp(0.98rem, 2vw, 1.08rem);
+  color: var(--testo-soft);
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+.menu {
+  display: grid;
+  gap: 16px;
+}
+
+.menu-button {
+  position: relative;
+  width: 100%;
+  min-height: 86px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 22px 24px;
+  border-radius: var(--radius-lg);
+  border: 2px solid transparent;
+  background: var(--bianco);
+  color: var(--verde-flora);
+  cursor: pointer;
+  text-align: left;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+  touch-action: manipulation;
+}
+
+.menu-button.primary {
+  background: linear-gradient(135deg, var(--verde-flora), var(--verde-scuro));
+  color: var(--bianco);
+  box-shadow: var(--ombra-soft);
+}
+
+.menu-button.secondary {
+  border-color: rgba(49, 168, 67, 0.32);
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.menu-button:hover,
+.action-button:hover,
+.small-button:hover {
+  transform: translateY(-2px);
+}
+
+.menu-button.secondary:hover {
+  background: var(--verde-extra-soft);
+  border-color: var(--verde-flora);
+}
+
+.menu-button:active,
+.action-button:active,
+.small-button:active,
+.choice-card:active {
+  transform: scale(0.98);
+}
+
+.menu-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
+
+.menu-icon {
+  flex: 0 0 auto;
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border-radius: 15px;
+  background: rgba(49, 168, 67, 0.12);
+  font-size: 1.35rem;
+}
+
+.primary .menu-icon {
+  background: rgba(255, 255, 255, 0.20);
+}
+
+.menu-title {
+  display: block;
+  font-size: clamp(1.12rem, 2.4vw, 1.35rem);
+  font-weight: 900;
+  line-height: 1.2;
+  letter-spacing: -0.2px;
+}
+
+.menu-description {
+  display: block;
+  margin-top: 6px;
+  font-size: clamp(0.86rem, 1.9vw, 0.98rem);
+  font-weight: 500;
+  line-height: 1.35;
+  opacity: 0.88;
+}
+
+.arrow {
+  flex: 0 0 auto;
+  font-size: 2rem;
+  font-weight: 300;
+  line-height: 1;
+  opacity: 0.95;
+}
+
+.info-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.info-box {
+  padding: 15px;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(228, 231, 236, 0.9);
+}
+
+.info-box strong {
+  display: block;
+  font-size: 0.92rem;
+  color: var(--nero);
+  margin-bottom: 4px;
+}
+
+.info-box span {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--testo-soft);
+  line-height: 1.35;
+}
+
+.top-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(49, 168, 67, 0.28);
+  background: rgba(255, 255, 255, 0.82);
+  color: var(--verde-scuro);
+  font-size: 0.92rem;
+  font-weight: 800;
+  text-decoration: none;
+  box-shadow: 0 8px 20px rgba(16, 24, 40, 0.06);
+}
+
+.page-title {
+  margin-bottom: 24px;
+}
+
+.progress-box {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin: 24px 0 30px;
+}
+
+.progress-step {
+  min-height: 46px;
+  padding: 12px 10px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.76);
+  border: 1px solid var(--bordo);
+  color: var(--testo-soft);
+  font-size: 0.82rem;
+  font-weight: 900;
+  text-align: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.progress-step.active {
+  background: var(--verde-flora);
+  border-color: var(--verde-flora);
+  color: var(--bianco);
+  box-shadow: var(--ombra-soft);
+}
+
+form {
+  display: grid;
+  gap: 22px;
+}
+
+.step-panel {
+  display: none;
+  gap: 22px;
+}
+
+.step-panel.active {
+  display: grid;
+}
+
+.section {
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(228, 231, 236, 0.95);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.section-header {
+  padding: 16px 18px;
+  background: linear-gradient(135deg, var(--verde-flora), var(--verde-scuro));
+  color: var(--bianco);
+}
+
+.section-header h3 {
+  font-size: clamp(1.05rem, 2.2vw, 1.25rem);
+  line-height: 1.2;
+}
+
+.section-body {
+  padding: 18px;
+  display: grid;
+  gap: 18px;
+}
+
+.grid-2,
+.grid-3,
+.choice-grid,
+.photo-grid,
+.summary-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.grid-2 { grid-template-columns: repeat(2, 1fr); }
+.grid-3 { grid-template-columns: repeat(3, 1fr); }
+.choice-grid { grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.choice-grid.two { grid-template-columns: repeat(2, 1fr); }
+.photo-grid { grid-template-columns: repeat(2, 1fr); }
+
+.field {
+  display: grid;
+  gap: 7px;
+}
+
+label {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: var(--testo);
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 13px;
+  border: 1.5px solid var(--bordo);
+  border-radius: 14px;
+  background: var(--bianco);
+  color: var(--testo);
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+textarea {
+  min-height: 96px;
+  resize: vertical;
+  line-height: 1.45;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--verde-flora);
+  box-shadow: 0 0 0 4px rgba(49, 168, 67, 0.12);
+}
+
+.choice-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 12px;
+  border: 1.5px solid var(--bordo);
+  border-radius: 15px;
+  background: var(--bianco);
+  cursor: pointer;
+  transition: border-color 0.18s ease, background 0.18s ease, transform 0.18s ease;
+  font-weight: 700;
+  color: var(--testo);
+}
+
+.choice-card input {
+  width: 20px;
+  height: 20px;
+  min-height: auto;
+  accent-color: var(--verde-flora);
+}
+
+.choice-card:has(input:checked) {
+  border-color: var(--verde-flora);
+  background: var(--verde-extra-soft);
+  color: var(--verde-scuro);
+}
+
+.inline-actions,
+.draw-tools {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.small-button {
+  min-height: 44px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  border: 1.5px solid rgba(49, 168, 67, 0.32);
+  background: var(--bianco);
+  color: var(--verde-scuro);
+  font-weight: 900;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.small-button.primary {
+  background: var(--verde-flora);
+  color: var(--bianco);
+  border-color: var(--verde-flora);
+}
+
+.note-box,
+.warning-box {
+  padding: 14px;
+  border-radius: 16px;
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.note-box {
+  background: var(--verde-extra-soft);
+  border: 1px solid rgba(49, 168, 67, 0.18);
+  color: var(--testo-soft);
+}
+
+.warning-box {
+  display: none;
+  background: var(--giallo-soft);
+  border: 1.5px solid rgba(181, 71, 8, 0.28);
+  color: var(--giallo);
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+
+.warning-box.show {
+  display: block;
+}
+
+.photo-card {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 18px;
+  background: var(--bianco);
+  border: 1.5px solid var(--bordo);
+}
+
+.photo-card input {
+  padding: 10px;
+}
+
+.preview {
+  min-height: 130px;
+  border-radius: 14px;
+  border: 1.5px dashed rgba(49, 168, 67, 0.35);
+  background: var(--verde-extra-soft);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  color: var(--testo-soft);
+  text-align: center;
+  font-size: 0.9rem;
+  padding: 10px;
+}
+
+.preview img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 12px;
+}
+
+.canvas-wrap {
+  width: 100%;
+  overflow: hidden;
+  border-radius: 18px;
+  border: 1.5px solid var(--bordo);
+  background: var(--bianco);
+}
+
+#drawingCanvas {
+  display: block;
+  width: 100%;
+  height: 380px;
+  touch-action: none;
+  background-color: #ffffff;
+  background-image:
+    linear-gradient(#d9dee3 1px, transparent 1px),
+    linear-gradient(90deg, #d9dee3 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.summary-box {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 18px;
+  border: 1.5px solid var(--bordo);
+  background: var(--bianco);
+}
+
+.summary-row {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eef0f2;
+  font-size: 0.95rem;
+}
+
+.summary-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.summary-row strong {
+  color: var(--nero);
+}
+
+.sticky-actions {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+  background: rgba(255, 255, 255, 0.84);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-top: 1px solid rgba(228, 231, 236, 0.95);
+}
+
+.sticky-inner {
+  width: 100%;
+  max-width: 1040px;
+  margin: 0 auto;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sticky-left,
+.sticky-right {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.action-button {
+  min-height: 50px;
+  padding: 12px 18px;
+  border-radius: 16px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 900;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+
+.action-button.primary {
+  background: linear-gradient(135deg, var(--verde-flora), var(--verde-scuro));
+  color: var(--bianco);
+  box-shadow: var(--ombra-soft);
+}
+
+.action-button.secondary {
+  background: var(--bianco);
+  color: var(--verde-scuro);
+  border-color: rgba(49, 168, 67, 0.35);
+}
+
+.action-button.danger {
+  background: #fff5f5;
+  color: var(--rosso);
+  border-color: #ffc9c9;
+}
+
+footer {
+  text-align: center;
+  padding: 18px 16px 26px;
+  font-size: 0.85rem;
+  color: #667085;
+}
+
+@media (max-width: 900px) {
+  .progress-box { grid-template-columns: repeat(3, 1fr); }
+  .grid-3,
+  .choice-grid { grid-template-columns: repeat(2, 1fr); }
+  .photo-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 720px) {
+  .info-strip { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 620px) {
+  .app-header { padding: 22px 14px 18px; }
+  .compact.logo,
+  .logo { width: min(190px, 70vw); }
+  .home-main,
+  .form-main { padding-left: 12px; padding-right: 12px; }
+  .form-main { padding-bottom: 26px; }
+  .home-card,
+  .form-card { border-radius: 24px; padding: 20px 14px; }
+  .top-actions { flex-direction: column; align-items: stretch; }
+  .back-button,
+  .status-pill { justify-content: center; }
+  .grid-2,
+  .grid-3,
+  .choice-grid,
+  .choice-grid.two,
+  .progress-box { grid-template-columns: 1fr; }
+  .section-body { padding: 15px; }
+  .menu-button { min-height: 78px; padding: 18px; border-radius: 18px; }
+  .menu-left { gap: 13px; }
+  .menu-icon { width: 42px; height: 42px; border-radius: 13px; font-size: 1.18rem; }
+  .menu-description { display: none; }
+  #drawingCanvas { height: 320px; }
+  .summary-row { grid-template-columns: 1fr; gap: 4px; }
+
+  .sticky-actions {
+    position: static;
+    padding: 16px 12px 26px;
+    margin-top: 10px;
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border-top: none;
+  }
+
+  .sticky-inner { display: grid; grid-template-columns: 1fr; }
+  .sticky-left,
+  .sticky-right { display: grid; grid-template-columns: 1fr 1fr; }
+  .action-button { width: 100%; }
+}
+
+@media (max-width: 380px) {
+  .sticky-left,
+  .sticky-right { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 360px) {
+  .menu-icon { display: none; }
+  .menu-button { padding: 18px 16px; }
+}
+
   </style>
 </head>
-
 <body>
-
   <div class="app">
-
-    <header>
+    <header class="app-header compact">
       <img src="assets/logo-flora.png" alt="Logo Flora" class="logo">
       <h1>Nuovo sopralluogo</h1>
       <p>Compilazione digitale scheda sopralluogo</p>
     </header>
 
-    <main>
+    <main class="form-main">
       <div class="container">
-
         <div class="top-actions">
           <a href="index.html" class="back-button">‹ Torna alla Home</a>
-
-          <div class="status-pill">
-            <span class="status-dot"></span>
-            Bozza locale
-          </div>
+          <div class="status-pill"><span class="badge-dot"></span>Bozza locale attiva</div>
         </div>
 
-        <section class="form-card">
+        <section class="form-card glass-card">
           <div class="form-content">
-
             <div class="page-title">
-              <div class="badge">
-                <span class="status-dot"></span>
-                Sopralluogo fotovoltaico
-              </div>
-
+              <div class="badge"><span class="badge-dot"></span>Sopralluogo fotovoltaico</div>
               <h2>Scheda sopralluogo</h2>
-
               <p>
                 Compila la pratica in modo guidato. I dati vengono salvati sul dispositivo
-                e potranno essere utilizzati per preparare la documentazione tecnica.
+                e possono essere consultati prima della trasmissione al tecnico incaricato.
               </p>
             </div>
 
-            <div class="progress-box">
-              <div class="progress-step active" onclick="goToStep(0)">1. Dati</div>
-              <div class="progress-step" onclick="goToStep(1)">2. Impianto</div>
-              <div class="progress-step" onclick="goToStep(2)">3. Tecnico</div>
-              <div class="progress-step" onclick="goToStep(3)">4. Foto</div>
-              <div class="progress-step" onclick="goToStep(4)">5. Riepilogo</div>
+            <div class="progress-box" id="progressBox">
+              <button class="progress-step active" type="button" data-step="0">1. Dati</button>
+              <button class="progress-step" type="button" data-step="1">2. Impianto</button>
+              <button class="progress-step" type="button" data-step="2">3. Tecnico</button>
+              <button class="progress-step" type="button" data-step="3">4. Foto e disegno</button>
+              <button class="progress-step" type="button" data-step="4">5. Riepilogo</button>
             </div>
 
-            <form id="sopralluogoForm">
-
-              <div class="step-panel active">
-
+            <form id="sopralluogoForm" autocomplete="on">
+              <div class="step-panel active" data-panel="0">
                 <section class="section">
-                  <div class="section-header">
-                    <h3>Dati pratica</h3>
-                  </div>
-
+                  <div class="section-header"><h3>Dati pratica</h3></div>
                   <div class="section-body">
                     <div class="grid-3">
                       <div class="field">
                         <label for="tecnico">Tecnico compilatore</label>
                         <input type="text" id="tecnico" name="tecnico" placeholder="Nome tecnico">
                       </div>
-
                       <div class="field">
                         <label for="data">Data sopralluogo</label>
                         <input type="date" id="data" name="data">
                       </div>
-
                       <div class="field">
                         <label for="protocollo">Protocollo N.</label>
                         <input type="text" id="protocollo" name="protocollo" value="IT-FL-" placeholder="IT-FL-">
@@ -776,7 +861,6 @@
                         <label for="referente">Referente</label>
                         <input type="text" id="referente" name="referente" placeholder="Referente richiesta">
                       </div>
-
                       <div class="field">
                         <label for="dataRicezione">Data ricezione</label>
                         <input type="date" id="dataRicezione" name="dataRicezione">
@@ -785,35 +869,30 @@
 
                     <div class="field">
                       <label>Provenienza richiesta</label>
-
-                      <div class="checkbox-grid">
-                        <label class="check-card"><input type="radio" name="provenienza" value="Passaparola">Passaparola</label>
-                        <label class="check-card"><input type="radio" name="provenienza" value="Social Facebook">Social Facebook</label>
-                        <label class="check-card"><input type="radio" name="provenienza" value="Social Instagram">Social Instagram</label>
-                        <label class="check-card"><input type="radio" name="provenienza" value="Google">Google</label>
-                        <label class="check-card"><input type="radio" name="provenienza" value="TikTok">TikTok</label>
-                        <label class="check-card"><input type="radio" name="provenienza" value="Whatsapp">Whatsapp</label>
-                        <label class="check-card"><input type="radio" name="provenienza" value="Volantinaggio">Volantinaggio</label>
-                        <label class="check-card"><input type="radio" name="provenienza" value="Call center">Call center</label>
-                        <label class="check-card"><input type="radio" name="provenienza" value="Segnalatore">Segnalatore</label>
-                        <label class="check-card"><input type="radio" name="provenienza" value="Punto Flora">Punto Flora</label>
+                      <div class="choice-grid">
+                        <label class="choice-card"><input type="radio" name="provenienza" value="Passaparola">Passaparola</label>
+                        <label class="choice-card"><input type="radio" name="provenienza" value="Social Facebook">Social Facebook</label>
+                        <label class="choice-card"><input type="radio" name="provenienza" value="Social Instagram">Social Instagram</label>
+                        <label class="choice-card"><input type="radio" name="provenienza" value="Google">Google</label>
+                        <label class="choice-card"><input type="radio" name="provenienza" value="TikTok">TikTok</label>
+                        <label class="choice-card"><input type="radio" name="provenienza" value="Whatsapp">Whatsapp</label>
+                        <label class="choice-card"><input type="radio" name="provenienza" value="Volantinaggio">Volantinaggio</label>
+                        <label class="choice-card"><input type="radio" name="provenienza" value="Call center">Call center</label>
+                        <label class="choice-card"><input type="radio" name="provenienza" value="Segnalatore">Segnalatore</label>
+                        <label class="choice-card"><input type="radio" name="provenienza" value="Punto Flora">Punto Flora</label>
                       </div>
                     </div>
                   </div>
                 </section>
 
                 <section class="section">
-                  <div class="section-header">
-                    <h3>Committente e luogo di installazione</h3>
-                  </div>
-
+                  <div class="section-header"><h3>Committente e luogo di installazione</h3></div>
                   <div class="section-body">
                     <div class="grid-2">
                       <div class="field">
                         <label for="nomeCliente">Nome e Cognome</label>
                         <input type="text" id="nomeCliente" name="nomeCliente" placeholder="Nome cliente">
                       </div>
-
                       <div class="field">
                         <label for="telefono">Telefono</label>
                         <input type="tel" id="telefono" name="telefono" placeholder="Numero telefono">
@@ -825,7 +904,6 @@
                         <label for="indirizzo">Indirizzo installazione</label>
                         <input type="text" id="indirizzo" name="indirizzo" placeholder="Via, numero civico">
                       </div>
-
                       <div class="field">
                         <label for="citta">Città</label>
                         <input type="text" id="citta" name="citta" placeholder="Comune">
@@ -833,102 +911,83 @@
                     </div>
 
                     <div class="field">
-                      <label>Geolocalizzazione</label>
-
+                      <label>Geolocalizzazione luogo installazione</label>
                       <div class="inline-actions">
-                        <button class="small-button primary" type="button" onclick="usaGeolocalizzazione()">Usa posizione attuale</button>
-                        <a id="mapsLink" class="small-button" href="#" target="_blank" style="display:none;">Apri su Maps</a>
+                        <button class="small-button primary" type="button" id="geoButton">Usa posizione attuale</button>
+                        <a id="mapsLink" class="small-button" href="#" target="_blank" rel="noopener" hidden>Apri su Maps</a>
                       </div>
-
                       <div class="grid-3">
                         <div class="field">
                           <label for="latitudine">Latitudine</label>
                           <input type="text" id="latitudine" name="latitudine" readonly placeholder="Non rilevata">
                         </div>
-
                         <div class="field">
                           <label for="longitudine">Longitudine</label>
                           <input type="text" id="longitudine" name="longitudine" readonly placeholder="Non rilevata">
                         </div>
-
                         <div class="field">
                           <label for="precisioneGps">Precisione GPS</label>
                           <input type="text" id="precisioneGps" name="precisioneGps" readonly placeholder="-">
                         </div>
                       </div>
-
                       <div class="note-box">
-                        Tocca “Usa posizione attuale” per salvare le coordinate del luogo di installazione.
+                        La geolocalizzazione richiede il consenso del dispositivo. Su GitHub Pages funziona perché il sito è pubblicato in HTTPS.
                       </div>
                     </div>
                   </div>
                 </section>
 
                 <section class="section">
-                  <div class="section-header">
-                    <h3>Tipologia intervento e specifiche installazione</h3>
-                  </div>
-
+                  <div class="section-header"><h3>Tipologia intervento e immobile</h3></div>
                   <div class="section-body">
                     <div class="field">
                       <label>Tipologia immobile</label>
-
-                      <div class="checkbox-grid">
-                        <label class="check-card"><input type="radio" name="tipologiaImmobile" value="Unifamiliare o Bifamiliare">Unifamiliare o Bifamiliare</label>
-                        <label class="check-card"><input type="radio" name="tipologiaImmobile" value="Condominio o Plurifamiliare">Condominio o Plurifamiliare</label>
-                        <label class="check-card"><input type="radio" name="tipologiaImmobile" value="Capannone agricolo">Capannone agricolo</label>
-                        <label class="check-card"><input type="radio" name="tipologiaImmobile" value="Capannone industriale">Capannone industriale</label>
+                      <div class="choice-grid">
+                        <label class="choice-card"><input type="radio" name="tipologiaImmobile" value="Unifamiliare o Bifamiliare">Unifamiliare o Bifamiliare</label>
+                        <label class="choice-card"><input type="radio" name="tipologiaImmobile" value="Condominio o Plurifamiliare">Condominio o Plurifamiliare</label>
+                        <label class="choice-card"><input type="radio" name="tipologiaImmobile" value="Capannone agricolo">Capannone agricolo</label>
+                        <label class="choice-card"><input type="radio" name="tipologiaImmobile" value="Capannone industriale">Capannone industriale</label>
                       </div>
                     </div>
-
                     <div class="field">
                       <label>Stato immobile</label>
-
-                      <div class="radio-row">
-                        <label class="check-card"><input type="radio" name="statoImmobile" value="Esistente">Esistente</label>
-                        <label class="check-card"><input type="radio" name="statoImmobile" value="In costruzione">In costruzione</label>
+                      <div class="choice-grid two">
+                        <label class="choice-card"><input type="radio" name="statoImmobile" value="Esistente">Esistente</label>
+                        <label class="choice-card"><input type="radio" name="statoImmobile" value="In costruzione">In costruzione</label>
                       </div>
                     </div>
                   </div>
                 </section>
-
               </div>
 
-              <div class="step-panel">
-
+              <div class="step-panel" data-panel="1">
                 <section class="section">
-                  <div class="section-header">
-                    <h3>Caratteristiche generali</h3>
-                  </div>
-
+                  <div class="section-header"><h3>Caratteristiche generali</h3></div>
                   <div class="section-body">
                     <div class="grid-2">
                       <div class="field">
                         <label for="potenzaRichiesta">Potenza impianto richiesta dal cliente - kWp</label>
-                        <input type="number" id="potenzaRichiesta" name="potenzaRichiesta" placeholder="Es. 6" step="0.01" oninput="controllaPotenza()">
+                        <input type="number" id="potenzaRichiesta" name="potenzaRichiesta" placeholder="Es. 6" step="0.01" inputmode="decimal">
                       </div>
-
                       <div class="field">
                         <label>È richiesto anche l'accumulo?</label>
-                        <div class="radio-row">
-                          <label class="check-card"><input type="radio" name="accumulo" value="No">No</label>
-                          <label class="check-card"><input type="radio" name="accumulo" value="Sì">Sì</label>
+                        <div class="choice-grid two">
+                          <label class="choice-card"><input type="radio" name="accumulo" value="No">No</label>
+                          <label class="choice-card"><input type="radio" name="accumulo" value="Sì">Sì</label>
                         </div>
                       </div>
                     </div>
 
                     <div class="field">
                       <label>Uso dell'immobile</label>
-
-                      <div class="checkbox-grid">
-                        <label class="check-card"><input type="radio" name="usoImmobile" value="Abitazione">Abitazione</label>
-                        <label class="check-card"><input type="radio" name="usoImmobile" value="Ufficio">Ufficio</label>
-                        <label class="check-card"><input type="radio" name="usoImmobile" value="Industria">Industria</label>
-                        <label class="check-card"><input type="radio" name="usoImmobile" value="Commercio">Commercio</label>
-                        <label class="check-card"><input type="radio" name="usoImmobile" value="Altro">Altro</label>
+                      <div class="choice-grid">
+                        <label class="choice-card"><input type="radio" name="usoImmobile" value="Abitazione">Abitazione</label>
+                        <label class="choice-card"><input type="radio" name="usoImmobile" value="Ufficio">Ufficio</label>
+                        <label class="choice-card"><input type="radio" name="usoImmobile" value="Industria">Industria</label>
+                        <label class="choice-card"><input type="radio" name="usoImmobile" value="Commercio">Commercio</label>
+                        <label class="choice-card"><input type="radio" name="usoImmobile" value="Altro">Altro</label>
                       </div>
                     </div>
-
                     <div class="field">
                       <label for="usoAltro">Altro uso immobile</label>
                       <input type="text" id="usoAltro" name="usoAltro" placeholder="Specificare se altro">
@@ -936,102 +995,71 @@
 
                     <div class="field">
                       <label>Presenza di vincoli architettonici o paesaggistici</label>
-
-                      <div class="radio-row">
-                        <label class="check-card"><input type="radio" name="vincoli" value="No">No</label>
-                        <label class="check-card"><input type="radio" name="vincoli" value="Sì">Sì</label>
+                      <div class="choice-grid two">
+                        <label class="choice-card"><input type="radio" name="vincoli" value="No">No</label>
+                        <label class="choice-card"><input type="radio" name="vincoli" value="Sì">Sì</label>
                       </div>
-
-                      <div class="note-box">
-                        Verificare con il comune di appartenenza l'esistenza di vincoli desumibili dal certificato di destinazione urbanistica.
-                      </div>
+                      <div class="note-box">Verificare con il comune di appartenenza l'esistenza di vincoli desumibili dal certificato di destinazione urbanistica.</div>
                     </div>
 
                     <div class="field">
                       <label>Il tetto è accessibile?</label>
-
-                      <div class="radio-row">
-                        <label class="check-card"><input type="radio" name="tettoAccessibile" value="No">No</label>
-                        <label class="check-card"><input type="radio" name="tettoAccessibile" value="Sì">Sì</label>
+                      <div class="choice-grid two">
+                        <label class="choice-card"><input type="radio" name="tettoAccessibile" value="No">No</label>
+                        <label class="choice-card"><input type="radio" name="tettoAccessibile" value="Sì">Sì</label>
                       </div>
                     </div>
 
                     <div class="field">
                       <label>Accessibilità luogo installazione moduli</label>
-
-                      <div class="checkbox-grid">
-                        <label class="check-card"><input type="radio" name="accessibilita" value="Scala interna">Scala interna</label>
-                        <label class="check-card"><input type="radio" name="accessibilita" value="Scala esterna fissa">Scala esterna fissa</label>
-                        <label class="check-card"><input type="radio" name="accessibilita" value="Scala esterna da fissare">Scala esterna da fissare</label>
-                        <label class="check-card"><input type="radio" name="accessibilita" value="Impalcatura">Impalcatura</label>
-                        <label class="check-card"><input type="radio" name="accessibilita" value="Cestello grande">Cestello grande</label>
+                      <div class="choice-grid">
+                        <label class="choice-card"><input type="radio" name="accessibilita" value="Scala interna">Scala interna</label>
+                        <label class="choice-card"><input type="radio" name="accessibilita" value="Scala esterna fissa">Scala esterna fissa</label>
+                        <label class="choice-card"><input type="radio" name="accessibilita" value="Scala esterna da fissare">Scala esterna da fissare</label>
+                        <label class="choice-card"><input type="radio" name="accessibilita" value="Impalcatura">Impalcatura</label>
+                        <label class="choice-card"><input type="radio" name="accessibilita" value="Cestello grande">Cestello grande</label>
                       </div>
                     </div>
 
                     <div class="grid-3">
                       <div class="field">
                         <label>È necessaria una gru?</label>
-                        <div class="radio-row">
-                          <label class="check-card"><input type="radio" name="gru" value="No">No</label>
-                          <label class="check-card"><input type="radio" name="gru" value="Sì">Sì</label>
-                        </div>
+                        <div class="choice-grid two"><label class="choice-card"><input type="radio" name="gru" value="No">No</label><label class="choice-card"><input type="radio" name="gru" value="Sì">Sì</label></div>
                       </div>
-
                       <div class="field">
                         <label>Cestello grande?</label>
-                        <div class="radio-row">
-                          <label class="check-card"><input type="radio" name="cestelloGrande" value="No">No</label>
-                          <label class="check-card"><input type="radio" name="cestelloGrande" value="Sì">Sì</label>
-                        </div>
+                        <div class="choice-grid two"><label class="choice-card"><input type="radio" name="cestelloGrande" value="No">No</label><label class="choice-card"><input type="radio" name="cestelloGrande" value="Sì">Sì</label></div>
                       </div>
-
                       <div class="field">
                         <label>Cestello piccolo?</label>
-                        <div class="radio-row">
-                          <label class="check-card"><input type="radio" name="cestelloPiccolo" value="No">No</label>
-                          <label class="check-card"><input type="radio" name="cestelloPiccolo" value="Sì">Sì</label>
-                        </div>
+                        <div class="choice-grid two"><label class="choice-card"><input type="radio" name="cestelloPiccolo" value="No">No</label><label class="choice-card"><input type="radio" name="cestelloPiccolo" value="Sì">Sì</label></div>
                       </div>
                     </div>
                   </div>
                 </section>
 
                 <section class="section">
-                  <div class="section-header">
-                    <h3>Caratteristiche impianto elettrico</h3>
-                  </div>
-
+                  <div class="section-header"><h3>Caratteristiche impianto elettrico</h3></div>
                   <div class="section-body">
                     <div class="grid-2">
                       <div class="field">
                         <label>Impianto elettrico conforme alla 37/08?</label>
-                        <div class="radio-row">
-                          <label class="check-card"><input type="radio" name="conformita3708" value="No">No</label>
-                          <label class="check-card"><input type="radio" name="conformita3708" value="Sì">Sì</label>
-                        </div>
+                        <div class="choice-grid two"><label class="choice-card"><input type="radio" name="conformita3708" value="No">No</label><label class="choice-card"><input type="radio" name="conformita3708" value="Sì">Sì</label></div>
                       </div>
-
                       <div class="field">
                         <label>Impianto di terra</label>
-                        <div class="radio-row">
-                          <label class="check-card"><input type="radio" name="impiantoTerra" value="Presente">Presente</label>
-                          <label class="check-card"><input type="radio" name="impiantoTerra" value="Assente">Assente</label>
-                        </div>
+                        <div class="choice-grid two"><label class="choice-card"><input type="radio" name="impiantoTerra" value="Presente">Presente</label><label class="choice-card"><input type="radio" name="impiantoTerra" value="Assente">Assente</label></div>
                       </div>
                     </div>
 
                     <div class="grid-2">
                       <div class="field">
                         <label>Protezione scariche atmosferiche</label>
-                        <div class="radio-row">
-                          <label class="check-card"><input type="radio" name="scaricheAtmosferiche" value="Presente">Presente</label>
-                          <label class="check-card"><input type="radio" name="scaricheAtmosferiche" value="Assente">Assente</label>
-                        </div>
+                        <div class="choice-grid two"><label class="choice-card"><input type="radio" name="scaricheAtmosferiche" value="Presente">Presente</label><label class="choice-card"><input type="radio" name="scaricheAtmosferiche" value="Assente">Assente</label></div>
                       </div>
-
                       <div class="field">
                         <label for="potenzaImpiegata">Potenza impegnata contatore - kW</label>
-                        <input type="number" id="potenzaImpiegata" name="potenzaImpiegata" placeholder="Es. 3" step="0.01" oninput="controllaPotenza()">
+                        <input type="number" id="potenzaImpiegata" name="potenzaImpiegata" placeholder="Es. 3" step="0.01" inputmode="decimal">
                       </div>
                     </div>
 
@@ -1042,7 +1070,7 @@
 
                     <div class="field">
                       <label for="consumoAnnuo">Consumo annuo in kWh</label>
-                      <input type="number" id="consumoAnnuo" name="consumoAnnuo" placeholder="Verificare su bollette">
+                      <input type="number" id="consumoAnnuo" name="consumoAnnuo" placeholder="Verificare su bollette" inputmode="numeric">
                     </div>
 
                     <div class="grid-2">
@@ -1050,7 +1078,6 @@
                         <label for="posizioneContatore">Dove è posizionato il contatore elettrico?</label>
                         <textarea id="posizioneContatore" name="posizioneContatore" placeholder="Descrivere posizione contatore"></textarea>
                       </div>
-
                       <div class="field">
                         <label for="posizioneQuadro">Dove è posizionato il quadro elettrico?</label>
                         <textarea id="posizioneQuadro" name="posizioneQuadro" placeholder="Descrivere posizione quadro"></textarea>
@@ -1059,879 +1086,729 @@
 
                     <div class="field">
                       <label>Spazio per un altro contatore</label>
-                      <div class="radio-row">
-                        <label class="check-card"><input type="radio" name="spazioAltroContatore" value="No">No</label>
-                        <label class="check-card"><input type="radio" name="spazioAltroContatore" value="Sì">Sì</label>
-                      </div>
+                      <div class="choice-grid two"><label class="choice-card"><input type="radio" name="spazioAltroContatore" value="No">No</label><label class="choice-card"><input type="radio" name="spazioAltroContatore" value="Sì">Sì</label></div>
                     </div>
                   </div>
                 </section>
-
               </div>
 
-              <div class="step-panel">
-
+              <div class="step-panel" data-panel="2">
                 <section class="section">
-                  <div class="section-header">
-                    <h3>Generatore fotovoltaico, inverter, contatore</h3>
-                  </div>
-
+                  <div class="section-header"><h3>Generatore fotovoltaico, inverter, contatore</h3></div>
                   <div class="section-body">
                     <div class="grid-2">
-                      <div class="field">
-                        <label for="ipotesiInverter">Ipotesi posizionamento inverter</label>
-                        <textarea id="ipotesiInverter" name="ipotesiInverter" placeholder="Descrivere posizione inverter"></textarea>
-                      </div>
-
-                      <div class="field">
-                        <label for="posizioneQuadroAcFv">Posizione quadro AC FV</label>
-                        <textarea id="posizioneQuadroAcFv" name="posizioneQuadroAcFv" placeholder="Descrivere posizione quadro AC FV"></textarea>
-                      </div>
+                      <div class="field"><label for="ipotesiInverter">Ipotesi posizionamento inverter</label><textarea id="ipotesiInverter" name="ipotesiInverter" placeholder="Descrivere posizione inverter"></textarea></div>
+                      <div class="field"><label for="posizioneQuadroAcFv">Posizione quadro AC FV</label><textarea id="posizioneQuadroAcFv" name="posizioneQuadroAcFv" placeholder="Descrivere posizione quadro AC FV"></textarea></div>
                     </div>
 
                     <div class="grid-3">
-                      <div class="field">
-                        <label for="distanzaModuli">Distanza dai moduli - m</label>
-                        <input type="number" id="distanzaModuli" name="distanzaModuli" step="0.01" placeholder="Metri">
-                      </div>
-
-                      <div class="field">
-                        <label for="distanzaQuadroInverter">Distanza quadro generale-inverter - m</label>
-                        <input type="number" id="distanzaQuadroInverter" name="distanzaQuadroInverter" step="0.01" placeholder="Metri">
-                      </div>
-
-                      <div class="field">
-                        <label for="distanzaContatoreQuadro">Distanza contatore-quadro generale - m</label>
-                        <input type="number" id="distanzaContatoreQuadro" name="distanzaContatoreQuadro" step="0.01" placeholder="Metri">
-                      </div>
+                      <div class="field"><label for="distanzaModuli">Distanza dai moduli - m</label><input type="number" id="distanzaModuli" name="distanzaModuli" step="0.01" placeholder="Metri"></div>
+                      <div class="field"><label for="distanzaQuadroInverter">Distanza quadro generale-inverter - m</label><input type="number" id="distanzaQuadroInverter" name="distanzaQuadroInverter" step="0.01" placeholder="Metri"></div>
+                      <div class="field"><label for="distanzaContatoreQuadro">Distanza contatore-quadro generale - m</label><input type="number" id="distanzaContatoreQuadro" name="distanzaContatoreQuadro" step="0.01" placeholder="Metri"></div>
                     </div>
 
-                    <div class="field">
-                      <label>Presenza di un locale dove riporre i materiali di cantiere</label>
-                      <div class="radio-row">
-                        <label class="check-card"><input type="radio" name="localeMateriali" value="No">No</label>
-                        <label class="check-card"><input type="radio" name="localeMateriali" value="Sì">Sì</label>
-                      </div>
-                    </div>
+                    <div class="field"><label>Presenza di un locale dove riporre i materiali di cantiere</label><div class="choice-grid two"><label class="choice-card"><input type="radio" name="localeMateriali" value="No">No</label><label class="choice-card"><input type="radio" name="localeMateriali" value="Sì">Sì</label></div></div>
 
                     <div class="field">
                       <label>Sicurezza</label>
-
-                      <div class="checkbox-grid">
-                        <label class="check-card"><input type="radio" name="sicurezza" value="Punti di ancoraggio">Punti di ancoraggio</label>
-                        <label class="check-card"><input type="radio" name="sicurezza" value="Linea vita">Linea vita</label>
-                        <label class="check-card"><input type="radio" name="sicurezza" value="Cestello">Cestello</label>
-                        <label class="check-card"><input type="radio" name="sicurezza" value="Ponteggio">Ponteggio</label>
-                        <label class="check-card"><input type="radio" name="sicurezza" value="Altro">Altro</label>
+                      <div class="choice-grid">
+                        <label class="choice-card"><input type="radio" name="sicurezza" value="Punti di ancoraggio">Punti di ancoraggio</label>
+                        <label class="choice-card"><input type="radio" name="sicurezza" value="Linea vita">Linea vita</label>
+                        <label class="choice-card"><input type="radio" name="sicurezza" value="Cestello">Cestello</label>
+                        <label class="choice-card"><input type="radio" name="sicurezza" value="Ponteggio">Ponteggio</label>
+                        <label class="choice-card"><input type="radio" name="sicurezza" value="Altro">Altro</label>
                       </div>
                     </div>
-
-                    <div class="field">
-                      <label for="sicurezzaAltro">Altro sicurezza</label>
-                      <input type="text" id="sicurezzaAltro" name="sicurezzaAltro" placeholder="Specificare se altro">
-                    </div>
+                    <div class="field"><label for="sicurezzaAltro">Altro sicurezza</label><input type="text" id="sicurezzaAltro" name="sicurezzaAltro" placeholder="Specificare se altro"></div>
                   </div>
                 </section>
 
                 <section class="section">
-                  <div class="section-header">
-                    <h3>Tipo di installazione e copertura</h3>
-                  </div>
-
+                  <div class="section-header"><h3>Tipo di installazione e copertura</h3></div>
                   <div class="section-body">
-                    <div class="field">
-                      <label>Tipo di installazione</label>
+                    <div class="field"><label>Tipo di installazione</label><div class="choice-grid"><label class="choice-card"><input type="radio" name="tipoInstallazione" value="Terreno">Terreno</label><label class="choice-card"><input type="radio" name="tipoInstallazione" value="Tetto">Tetto</label><label class="choice-card"><input type="radio" name="tipoInstallazione" value="Pensilina">Pensilina</label><label class="choice-card"><input type="radio" name="tipoInstallazione" value="Altro">Altro</label></div></div>
+                    <div class="field"><label for="tipoInstallazioneAltro">Altro tipo installazione</label><input type="text" id="tipoInstallazioneAltro" name="tipoInstallazioneAltro" placeholder="Specificare se altro"></div>
 
-                      <div class="checkbox-grid">
-                        <label class="check-card"><input type="radio" name="tipoInstallazione" value="Terreno">Terreno</label>
-                        <label class="check-card"><input type="radio" name="tipoInstallazione" value="Tetto">Tetto</label>
-                        <label class="check-card"><input type="radio" name="tipoInstallazione" value="Pensilina">Pensilina</label>
-                        <label class="check-card"><input type="radio" name="tipoInstallazione" value="Altro">Altro</label>
-                      </div>
-                    </div>
+                    <div class="field"><label>Tipo tetto</label><div class="choice-grid"><label class="choice-card"><input type="radio" name="tipoTetto" value="Tetto 1 falda">Tetto 1 falda</label><label class="choice-card"><input type="radio" name="tipoTetto" value="Tetto 2 falde">Tetto 2 falde</label><label class="choice-card"><input type="radio" name="tipoTetto" value="Tetto 3 falde">Tetto 3 falde</label><label class="choice-card"><input type="radio" name="tipoTetto" value="Tetto 4 falde">Tetto 4 falde</label><label class="choice-card"><input type="radio" name="tipoTetto" value="Tetto curvo">Tetto curvo</label><label class="choice-card"><input type="radio" name="tipoTetto" value="Tetto piano">Tetto piano</label></div></div>
 
-                    <div class="field">
-                      <label for="tipoInstallazioneAltro">Altro tipo installazione</label>
-                      <input type="text" id="tipoInstallazioneAltro" name="tipoInstallazioneAltro" placeholder="Specificare se altro">
-                    </div>
-
-                    <div class="field">
-                      <label>Tipo tetto</label>
-
-                      <div class="checkbox-grid">
-                        <label class="check-card"><input type="radio" name="tipoTetto" value="Tetto 1 falda">Tetto 1 falda</label>
-                        <label class="check-card"><input type="radio" name="tipoTetto" value="Tetto 2 falde">Tetto 2 falde</label>
-                        <label class="check-card"><input type="radio" name="tipoTetto" value="Tetto 3 falde">Tetto 3 falde</label>
-                        <label class="check-card"><input type="radio" name="tipoTetto" value="Tetto 4 falde">Tetto 4 falde</label>
-                        <label class="check-card"><input type="radio" name="tipoTetto" value="Tetto curvo">Tetto curvo</label>
-                        <label class="check-card"><input type="radio" name="tipoTetto" value="Tetto piano">Tetto piano</label>
-                      </div>
-                    </div>
-
-                    <div class="field">
-                      <label>Copertura</label>
-
-                      <div class="checkbox-grid">
-                        <label class="check-card"><input type="radio" name="copertura" value="Tegole">Tegole</label>
-                        <label class="check-card"><input type="radio" name="copertura" value="Ardesia">Ardesia</label>
-                        <label class="check-card"><input type="radio" name="copertura" value="Lamiera grecata">Lamiera grecata</label>
-                        <label class="check-card"><input type="radio" name="copertura" value="Lastra fibrocemento">Lastra fibrocemento</label>
-                        <label class="check-card"><input type="radio" name="copertura" value="Altro">Altro</label>
-                      </div>
-                    </div>
-
-                    <div class="field">
-                      <label for="coperturaAltro">Altro copertura</label>
-                      <input type="text" id="coperturaAltro" name="coperturaAltro" placeholder="Specificare se altro">
-                    </div>
+                    <div class="field"><label>Copertura</label><div class="choice-grid"><label class="choice-card"><input type="radio" name="copertura" value="Tegole">Tegole</label><label class="choice-card"><input type="radio" name="copertura" value="Ardesia">Ardesia</label><label class="choice-card"><input type="radio" name="copertura" value="Lamiera grecata">Lamiera grecata</label><label class="choice-card"><input type="radio" name="copertura" value="Lastra fibrocemento">Lastra fibrocemento</label><label class="choice-card"><input type="radio" name="copertura" value="Altro">Altro</label></div></div>
+                    <div class="field"><label for="coperturaAltro">Altro copertura</label><input type="text" id="coperturaAltro" name="coperturaAltro" placeholder="Specificare se altro"></div>
 
                     <div class="grid-3">
-                      <div class="field">
-                        <label for="altezzaTettoPiano">Altezza tetto piano - m</label>
-                        <input type="number" id="altezzaTettoPiano" name="altezzaTettoPiano" step="0.01" placeholder="Metri">
-                      </div>
-
-                      <div class="field">
-                        <label>Balaustra</label>
-
-                        <div class="radio-row">
-                          <label class="check-card"><input type="radio" name="balaustra" value="No">No</label>
-                          <label class="check-card"><input type="radio" name="balaustra" value="Sì">Sì</label>
-                        </div>
-                      </div>
-
-                      <div class="field">
-                        <label for="altezzaBalaustra">Altezza balaustra - cm</label>
-                        <input type="number" id="altezzaBalaustra" name="altezzaBalaustra" step="0.01" placeholder="cm">
-                      </div>
+                      <div class="field"><label for="altezzaTettoPiano">Altezza tetto piano - m</label><input type="number" id="altezzaTettoPiano" name="altezzaTettoPiano" step="0.01" placeholder="Metri"></div>
+                      <div class="field"><label>Balaustra</label><div class="choice-grid two"><label class="choice-card"><input type="radio" name="balaustra" value="No">No</label><label class="choice-card"><input type="radio" name="balaustra" value="Sì">Sì</label></div></div>
+                      <div class="field"><label for="altezzaBalaustra">Altezza balaustra - cm</label><input type="number" id="altezzaBalaustra" name="altezzaBalaustra" step="0.01" placeholder="cm"></div>
                     </div>
 
-                    <div class="field">
-                      <label>Sottocostruzione</label>
-
-                      <div class="checkbox-grid">
-                        <label class="check-card"><input type="radio" name="sottocostruzione" value="Legno">Legno</label>
-                        <label class="check-card"><input type="radio" name="sottocostruzione" value="Calcestruzzo">Calcestruzzo</label>
-                        <label class="check-card"><input type="radio" name="sottocostruzione" value="Acciaio">Acciaio</label>
-                        <label class="check-card"><input type="radio" name="sottocostruzione" value="Altro">Altro</label>
-                      </div>
-                    </div>
-
-                    <div class="field">
-                      <label for="sottocostruzioneAltro">Altro sottocostruzione</label>
-                      <input type="text" id="sottocostruzioneAltro" name="sottocostruzioneAltro" placeholder="Specificare se altro">
-                    </div>
+                    <div class="field"><label>Sottocostruzione</label><div class="choice-grid"><label class="choice-card"><input type="radio" name="sottocostruzione" value="Legno">Legno</label><label class="choice-card"><input type="radio" name="sottocostruzione" value="Calcestruzzo">Calcestruzzo</label><label class="choice-card"><input type="radio" name="sottocostruzione" value="Acciaio">Acciaio</label><label class="choice-card"><input type="radio" name="sottocostruzione" value="Altro">Altro</label></div></div>
+                    <div class="field"><label for="sottocostruzioneAltro">Altro sottocostruzione</label><input type="text" id="sottocostruzioneAltro" name="sottocostruzioneAltro" placeholder="Specificare se altro"></div>
 
                     <div class="grid-2">
-                      <div class="field">
-                        <label for="superficieUtilizzabile">Superficie utilizzabile - mq</label>
-                        <input type="number" id="superficieUtilizzabile" name="superficieUtilizzabile" step="0.01" placeholder="A = mq">
-                      </div>
-
-                      <div class="field">
-                        <label for="ombreggiamenti">Possibili ombreggiamenti</label>
-                        <textarea id="ombreggiamenti" name="ombreggiamenti" placeholder="Descrivere eventuali ombreggiamenti"></textarea>
-                      </div>
+                      <div class="field"><label for="superficieUtilizzabile">Superficie utilizzabile - mq</label><input type="number" id="superficieUtilizzabile" name="superficieUtilizzabile" step="0.01" placeholder="A = mq"></div>
+                      <div class="field"><label for="ombreggiamenti">Possibili ombreggiamenti</label><textarea id="ombreggiamenti" name="ombreggiamenti" placeholder="Descrivere eventuali ombreggiamenti"></textarea></div>
                     </div>
                   </div>
                 </section>
-
               </div>
 
-              <div class="step-panel">
-
+              <div class="step-panel" data-panel="3">
                 <section class="section">
-                  <div class="section-header">
-                    <h3>Foto sopralluogo</h3>
-                  </div>
-
+                  <div class="section-header"><h3>Foto sopralluogo</h3></div>
                   <div class="section-body">
+                    <div class="note-box">Le foto vengono compresse e salvate nella bozza locale del dispositivo.</div>
                     <div class="photo-grid">
-                      <div class="photo-card">
-                        <label for="fotoTetto">Foto tetto / area moduli</label>
-                        <input type="file" id="fotoTetto" accept="image/*" capture="environment" onchange="gestisciFoto(event, 'previewTetto', 'fotoTettoData')">
-                        <div id="previewTetto" class="preview">Nessuna foto caricata</div>
-                      </div>
-
-                      <div class="photo-card">
-                        <label for="fotoContatore">Foto contatore</label>
-                        <input type="file" id="fotoContatore" accept="image/*" capture="environment" onchange="gestisciFoto(event, 'previewContatore', 'fotoContatoreData')">
-                        <div id="previewContatore" class="preview">Nessuna foto caricata</div>
-                      </div>
-
-                      <div class="photo-card">
-                        <label for="fotoQuadro">Foto quadro elettrico</label>
-                        <input type="file" id="fotoQuadro" accept="image/*" capture="environment" onchange="gestisciFoto(event, 'previewQuadro', 'fotoQuadroData')">
-                        <div id="previewQuadro" class="preview">Nessuna foto caricata</div>
-                      </div>
-
-                      <div class="photo-card">
-                        <label for="fotoInverter">Foto area inverter</label>
-                        <input type="file" id="fotoInverter" accept="image/*" capture="environment" onchange="gestisciFoto(event, 'previewInverter', 'fotoInverterData')">
-                        <div id="previewInverter" class="preview">Nessuna foto caricata</div>
-                      </div>
-
-                      <div class="photo-card">
-                        <label for="fotoAccesso">Foto accesso al tetto</label>
-                        <input type="file" id="fotoAccesso" accept="image/*" capture="environment" onchange="gestisciFoto(event, 'previewAccesso', 'fotoAccessoData')">
-                        <div id="previewAccesso" class="preview">Nessuna foto caricata</div>
-                      </div>
-
-                      <div class="photo-card">
-                        <label for="fotoOmbreggiamenti">Foto ombreggiamenti / ostacoli</label>
-                        <input type="file" id="fotoOmbreggiamenti" accept="image/*" capture="environment" onchange="gestisciFoto(event, 'previewOmbreggiamenti', 'fotoOmbreggiamentiData')">
-                        <div id="previewOmbreggiamenti" class="preview">Nessuna foto caricata</div>
-                      </div>
+                      <div class="photo-card"><label for="fotoTetto">Foto tetto / area moduli</label><input type="file" id="fotoTetto" accept="image/*" capture="environment" data-preview="previewTetto" data-key="fotoTettoData"><div id="previewTetto" class="preview">Nessuna foto caricata</div></div>
+                      <div class="photo-card"><label for="fotoContatore">Foto contatore</label><input type="file" id="fotoContatore" accept="image/*" capture="environment" data-preview="previewContatore" data-key="fotoContatoreData"><div id="previewContatore" class="preview">Nessuna foto caricata</div></div>
+                      <div class="photo-card"><label for="fotoQuadro">Foto quadro elettrico</label><input type="file" id="fotoQuadro" accept="image/*" capture="environment" data-preview="previewQuadro" data-key="fotoQuadroData"><div id="previewQuadro" class="preview">Nessuna foto caricata</div></div>
+                      <div class="photo-card"><label for="fotoInverter">Foto area inverter</label><input type="file" id="fotoInverter" accept="image/*" capture="environment" data-preview="previewInverter" data-key="fotoInverterData"><div id="previewInverter" class="preview">Nessuna foto caricata</div></div>
+                      <div class="photo-card"><label for="fotoAccesso">Foto accesso al tetto</label><input type="file" id="fotoAccesso" accept="image/*" capture="environment" data-preview="previewAccesso" data-key="fotoAccessoData"><div id="previewAccesso" class="preview">Nessuna foto caricata</div></div>
+                      <div class="photo-card"><label for="fotoOmbreggiamenti">Foto ombreggiamenti / ostacoli</label><input type="file" id="fotoOmbreggiamenti" accept="image/*" capture="environment" data-preview="previewOmbreggiamenti" data-key="fotoOmbreggiamentiData"><div id="previewOmbreggiamenti" class="preview">Nessuna foto caricata</div></div>
                     </div>
                   </div>
                 </section>
 
                 <section class="section">
-                  <div class="section-header">
-                    <h3>Disegno e osservazioni</h3>
-                  </div>
-
+                  <div class="section-header"><h3>Disegno e osservazioni</h3></div>
                   <div class="section-body">
                     <div class="draw-tools">
-                      <button class="small-button primary" type="button" onclick="salvaDisegno()">Salva disegno</button>
-                      <button class="small-button" type="button" onclick="pulisciDisegno()">Pulisci disegno</button>
-
+                      <button class="small-button primary" type="button" id="saveDrawingButton">Salva disegno</button>
+                      <button class="small-button" type="button" id="clearDrawingButton">Pulisci disegno</button>
                       <label for="spessorePenna">Spessore</label>
-                      <select id="spessorePenna" style="max-width: 130px;">
-                        <option value="2">Fine</option>
-                        <option value="4" selected>Medio</option>
-                        <option value="7">Grande</option>
-                      </select>
+                      <select id="spessorePenna"><option value="2">Fine</option><option value="4" selected>Medio</option><option value="7">Grande</option></select>
                     </div>
-
-                    <div class="canvas-wrap">
-                      <canvas id="drawingCanvas"></canvas>
-                    </div>
-
-                    <div class="field">
-                      <label for="osservazioni">Osservazioni</label>
-                      <textarea id="osservazioni" name="osservazioni" placeholder="Inserire note, misure, criticità, indicazioni per l'ingegnere"></textarea>
-                    </div>
+                    <div class="canvas-wrap"><canvas id="drawingCanvas"></canvas></div>
+                    <div class="field"><label for="osservazioni">Osservazioni</label><textarea id="osservazioni" name="osservazioni" placeholder="Inserire note, misure, criticità, indicazioni per l'ingegnere"></textarea></div>
                   </div>
                 </section>
-
               </div>
 
-              <div class="step-panel">
-
+              <div class="step-panel" data-panel="4">
                 <section class="section">
-                  <div class="section-header">
-                    <h3>Riepilogo pratica</h3>
-                  </div>
-
+                  <div class="section-header"><h3>Riepilogo pratica</h3></div>
                   <div class="section-body">
                     <div id="summaryWarning" class="warning-box">
                       Avviso: la potenza impianto richiesta è superiore alla potenza impegnata del contatore.
                       Il cliente deve fare richiesta di aumento di potenza del contatore. Spesa a carico del committente.
                     </div>
-
                     <div id="summaryBox" class="summary-box"></div>
-
-                    <div class="field">
-                      <label for="emailIngegnere">Email ingegnere</label>
-                      <input type="email" id="emailIngegnere" name="emailIngegnere" placeholder="email@dominio.it">
-                    </div>
-
-                    <div class="inline-actions">
-                      <button class="small-button primary" type="button" onclick="preparaEmail()">Prepara invio pratica</button>
-                    </div>
+                    <div class="field"><label for="emailIngegnere">Email destinatario pratica</label><input type="email" id="emailIngegnere" name="emailIngegnere" value="fotovoltaico@florambiente.it"></div>
+                    <div class="inline-actions"><button class="small-button primary" type="button" id="emailButton">Prepara invio pratica</button></div>
+                    
                   </div>
                 </section>
-
               </div>
-
             </form>
           </div>
         </section>
-
       </div>
     </main>
 
     <div class="sticky-actions">
       <div class="sticky-inner">
         <div class="sticky-left">
-          <button class="action-button danger" type="button" onclick="pulisciBozza()">Pulisci</button>
-          <button class="action-button secondary" type="button" onclick="salvaBozza()">Salva bozza</button>
+          <button class="action-button danger" type="button" id="clearDraftButton">Pulisci</button>
+          <button class="action-button secondary" type="button" id="saveDraftButton">Salva bozza</button>
         </div>
-
         <div class="sticky-right">
-          <button class="action-button secondary" type="button" onclick="prevStep()">Indietro</button>
-          <button id="nextButton" class="action-button primary" type="button" onclick="nextStep()">Avanti</button>
+          <button class="action-button secondary" type="button" id="prevButton">Indietro</button>
+          <button class="action-button primary" type="button" id="nextButton">Avanti</button>
         </div>
       </div>
     </div>
 
-    <footer>
-      Flora Multiservice S.r.l. - App sopralluoghi
-    </footer>
-
+    <footer>Flora Multiservice S.r.l. - App sopralluoghi</footer>
   </div>
 
   <script>
-    const STORAGE_KEY = "flora_sopralluogo_bozza";
-    const DRAWING_KEY = "flora_sopralluogo_disegno";
+const STORAGE_KEY = "flora_sopralluogo_bozza";
+const DRAWING_KEY = "flora_sopralluogo_disegno";
 
-    let currentStep = 0;
-    let fotoData = {};
-    let isDrawing = false;
-    let lastX = 0;
-    let lastY = 0;
+let currentStep = 0;
+let fotoData = {};
+let isDrawing = false;
+let lastX = 0;
+let lastY = 0;
 
-    document.addEventListener("DOMContentLoaded", function () {
-      impostaDataOdierna();
-      inizializzaCanvas();
-      caricaBozza();
-      aggiornaStep();
-      controllaPotenza();
+window.addEventListener("DOMContentLoaded", () => {
+  impostaDataOdierna();
+  inizializzaCanvas();
+  caricaBozza();
+  impostaEmailDefault();
+  aggiornaStep();
+  controllaPotenza();
+  collegaEventi();
+});
 
-      const form = document.getElementById("sopralluogoForm");
+function collegaEventi() {
+  const form = document.getElementById("sopralluogoForm");
 
-      form.addEventListener("input", function () {
-        salvaBozzaSilenziosa();
-        controllaPotenza();
-      });
+  form.addEventListener("input", () => {
+    salvaBozzaSilenziosa();
+    controllaPotenza();
+  });
 
-      form.addEventListener("change", function () {
-        salvaBozzaSilenziosa();
-        controllaPotenza();
-      });
+  form.addEventListener("change", () => {
+    salvaBozzaSilenziosa();
+    controllaPotenza();
+  });
 
-      window.addEventListener("resize", function () {
-        salvaDisegno();
-        setTimeout(function () {
-          inizializzaCanvas();
-          ripristinaDisegno();
-        }, 150);
-      });
+  document.querySelectorAll(".progress-step").forEach((button) => {
+    button.addEventListener("click", () => goToStep(Number(button.dataset.step)));
+  });
+
+  document.getElementById("geoButton").addEventListener("click", usaGeolocalizzazione);
+  document.getElementById("saveDraftButton").addEventListener("click", salvaBozza);
+  document.getElementById("clearDraftButton").addEventListener("click", pulisciBozza);
+  document.getElementById("prevButton").addEventListener("click", prevStep);
+  document.getElementById("nextButton").addEventListener("click", nextStep);
+  document.getElementById("emailButton").addEventListener("click", preparaEmail);
+  document.getElementById("saveDrawingButton").addEventListener("click", salvaDisegno);
+  document.getElementById("clearDrawingButton").addEventListener("click", pulisciDisegno);
+
+  document.querySelectorAll("input[type='file'][data-preview]").forEach((input) => {
+    input.addEventListener("change", (event) => {
+      gestisciFoto(event, input.dataset.preview, input.dataset.key);
     });
+  });
 
-    function impostaDataOdierna() {
-      const campoData = document.getElementById("data");
+  let resizeTimer;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      salvaDisegno();
+      inizializzaCanvas();
+      ripristinaDisegno();
+    }, 250);
+  });
+}
 
-      if (!campoData.value) {
-        const oggi = new Date().toISOString().split("T")[0];
-        campoData.value = oggi;
+function impostaDataOdierna() {
+  const campoData = document.getElementById("data");
+  if (!campoData.value) {
+    campoData.value = new Date().toISOString().split("T")[0];
+  }
+}
+
+function impostaEmailDefault() {
+  const campoEmail = document.getElementById("emailIngegnere");
+  if (campoEmail && !campoEmail.value) {
+    campoEmail.value = "fotovoltaico@florambiente.it";
+  }
+}
+
+function goToStep(index) {
+  currentStep = index;
+  aggiornaStep();
+}
+
+function nextStep() {
+  salvaBozzaSilenziosa();
+
+  if (currentStep < 4) {
+    currentStep += 1;
+    aggiornaStep();
+  } else {
+    preparaEmail();
+  }
+}
+
+function prevStep() {
+  if (currentStep > 0) {
+    currentStep -= 1;
+    aggiornaStep();
+  }
+}
+
+function aggiornaStep() {
+  const panels = document.querySelectorAll(".step-panel");
+  const steps = document.querySelectorAll(".progress-step");
+  const nextButton = document.getElementById("nextButton");
+
+  panels.forEach((panel, index) => panel.classList.toggle("active", index === currentStep));
+  steps.forEach((step, index) => step.classList.toggle("active", index === currentStep));
+
+  if (currentStep === 4) {
+    nextButton.textContent = "Concludi";
+    impostaEmailDefault();
+    generaRiepilogo();
+  } else {
+    nextButton.textContent = "Avanti";
+  }
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function raccogliDatiForm() {
+  const form = document.getElementById("sopralluogoForm");
+  const dati = {};
+  const elementi = form.querySelectorAll("input, textarea, select");
+
+  elementi.forEach((elemento) => {
+    if (!elemento.name) return;
+
+    if (elemento.type === "radio") {
+      if (elemento.checked) {
+        dati[elemento.name] = elemento.value;
+      } else if (dati[elemento.name] === undefined) {
+        dati[elemento.name] = "";
       }
+    } else if (elemento.type !== "file") {
+      dati[elemento.name] = elemento.value;
     }
+  });
 
-    function goToStep(index) {
-      salvaBozzaSilenziosa();
-      currentStep = index;
-      aggiornaStep();
+  dati.fotoData = fotoData;
+  dati.disegno = localStorage.getItem(DRAWING_KEY) || "";
+  dati.ultimoSalvataggio = new Date().toISOString();
+
+  return dati;
+}
+
+function applicaDatiForm(dati) {
+  const form = document.getElementById("sopralluogoForm");
+  const elementi = form.querySelectorAll("input, textarea, select");
+
+  elementi.forEach((elemento) => {
+    if (!elemento.name) return;
+    const valore = dati[elemento.name];
+
+    if (elemento.type === "radio") {
+      elemento.checked = valore === elemento.value;
+    } else if (elemento.type !== "file" && valore !== undefined) {
+      elemento.value = valore;
     }
+  });
 
-    function nextStep() {
-      salvaBozzaSilenziosa();
+  fotoData = dati.fotoData || {};
+  ripristinaPreviewFoto();
+  aggiornaMapsLink();
+  impostaEmailDefault();
+}
 
-      if (currentStep < 4) {
-        currentStep++;
-        aggiornaStep();
-      } else {
-        preparaEmail();
-      }
-    }
+function salvaBozzaSilenziosa() {
+  const dati = raccogliDatiForm();
 
-    function prevStep() {
-      salvaBozzaSilenziosa();
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(dati));
+  } catch (errore) {
+    console.warn("Memoria locale piena o non disponibile:", errore);
+  }
+}
 
-      if (currentStep > 0) {
-        currentStep--;
-        aggiornaStep();
-      }
-    }
+function salvaBozza() {
+  salvaDisegno();
+  salvaBozzaSilenziosa();
+  alert("Bozza salvata su questo dispositivo.");
+}
 
-    function aggiornaStep() {
-      const panels = document.querySelectorAll(".step-panel");
-      const steps = document.querySelectorAll(".progress-step");
-      const nextButton = document.getElementById("nextButton");
+function caricaBozza() {
+  const bozza = localStorage.getItem(STORAGE_KEY);
+  if (!bozza) return;
 
-      panels.forEach(function (panel, index) {
-        panel.classList.toggle("active", index === currentStep);
-      });
+  try {
+    const dati = JSON.parse(bozza);
+    applicaDatiForm(dati);
+    ripristinaDisegno();
+  } catch (errore) {
+    console.error("Errore caricamento bozza:", errore);
+  }
+}
 
-      steps.forEach(function (step, index) {
-        step.classList.toggle("active", index === currentStep);
-      });
+function pulisciBozza() {
+  const conferma = confirm("Vuoi cancellare tutti i dati inseriti in questa bozza?");
+  if (!conferma) return;
 
-      if (currentStep === 4) {
-        nextButton.textContent = "Concludi";
-        generaRiepilogo();
-      } else {
-        nextButton.textContent = "Avanti";
-      }
+  localStorage.removeItem(STORAGE_KEY);
+  localStorage.removeItem(DRAWING_KEY);
+  fotoData = {};
 
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
+  document.getElementById("sopralluogoForm").reset();
+  document.getElementById("protocollo").value = "IT-FL-";
+  impostaDataOdierna();
+  impostaEmailDefault();
+  ripristinaPreviewFoto();
+  pulisciDisegno();
+  controllaPotenza();
+  goToStep(0);
 
-    function raccogliDatiForm() {
-      const form = document.getElementById("sopralluogoForm");
-      const dati = {};
-      const elementi = form.querySelectorAll("input, textarea, select");
+  alert("Bozza cancellata.");
+}
 
-      elementi.forEach(function (elemento) {
-        if (!elemento.name) return;
+function usaGeolocalizzazione() {
+  if (!navigator.geolocation) {
+    alert("Geolocalizzazione non supportata dal dispositivo.");
+    return;
+  }
 
-        if (elemento.type === "radio") {
-          if (elemento.checked) {
-            dati[elemento.name] = elemento.value;
-          } else if (dati[elemento.name] === undefined) {
-            dati[elemento.name] = "";
-          }
-        } else if (elemento.type !== "file") {
-          dati[elemento.name] = elemento.value;
-        }
-      });
+  const geoButton = document.getElementById("geoButton");
+  geoButton.textContent = "Rilevamento in corso...";
+  geoButton.disabled = true;
 
-      dati.fotoData = fotoData;
-      dati.disegno = localStorage.getItem(DRAWING_KEY) || "";
-      dati.ultimoSalvataggio = new Date().toISOString();
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      const lat = position.coords.latitude.toFixed(6);
+      const lng = position.coords.longitude.toFixed(6);
+      const precisione = Math.round(position.coords.accuracy);
 
-      return dati;
-    }
+      document.getElementById("latitudine").value = lat;
+      document.getElementById("longitudine").value = lng;
+      document.getElementById("precisioneGps").value = `${precisione} m`;
 
-    function applicaDatiForm(dati) {
-      const form = document.getElementById("sopralluogoForm");
-      const elementi = form.querySelectorAll("input, textarea, select");
-
-      elementi.forEach(function (elemento) {
-        if (!elemento.name) return;
-
-        const valore = dati[elemento.name];
-
-        if (elemento.type === "radio") {
-          elemento.checked = valore === elemento.value;
-        } else if (elemento.type !== "file" && valore !== undefined) {
-          elemento.value = valore;
-        }
-      });
-
-      fotoData = dati.fotoData || {};
-      ripristinaPreviewFoto();
       aggiornaMapsLink();
-    }
-
-    function salvaBozzaSilenziosa() {
-      const dati = raccogliDatiForm();
-
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(dati));
-      } catch (errore) {
-        console.warn("Memoria locale piena o non disponibile:", errore);
-      }
-    }
-
-    function salvaBozza() {
-      salvaDisegno();
       salvaBozzaSilenziosa();
-      alert("Bozza salvata su questo dispositivo.");
+
+      geoButton.textContent = "Usa posizione attuale";
+      geoButton.disabled = false;
+      alert("Posizione rilevata correttamente.");
+    },
+    () => {
+      geoButton.textContent = "Usa posizione attuale";
+      geoButton.disabled = false;
+      alert("Impossibile rilevare la posizione. Verifica i permessi GPS del dispositivo.");
+    },
+    {
+      enableHighAccuracy: true,
+      timeout: 12000,
+      maximumAge: 0
     }
+  );
+}
 
-    function caricaBozza() {
-      const bozza = localStorage.getItem(STORAGE_KEY);
+function aggiornaMapsLink() {
+  const lat = document.getElementById("latitudine").value;
+  const lng = document.getElementById("longitudine").value;
+  const link = document.getElementById("mapsLink");
 
-      if (!bozza) {
-        return;
-      }
+  if (lat && lng) {
+    link.href = `https://www.google.com/maps?q=${encodeURIComponent(`${lat},${lng}`)}`;
+    link.hidden = false;
+  } else {
+    link.hidden = true;
+  }
+}
 
-      try {
-        const dati = JSON.parse(bozza);
-        applicaDatiForm(dati);
-        ripristinaDisegno();
-      } catch (errore) {
-        console.error("Errore caricamento bozza:", errore);
-      }
-    }
+function controllaPotenza() {
+  const richiesta = parseFloat(document.getElementById("potenzaRichiesta").value);
+  const contatore = parseFloat(document.getElementById("potenzaImpiegata").value);
+  const show = !Number.isNaN(richiesta) && !Number.isNaN(contatore) && richiesta > contatore;
 
-    function pulisciBozza() {
-      const conferma = confirm("Vuoi cancellare tutti i dati inseriti in questa bozza?");
+  document.getElementById("powerWarning")?.classList.toggle("show", show);
+  document.getElementById("summaryWarning")?.classList.toggle("show", show);
+}
 
-      if (!conferma) {
-        return;
-      }
+function gestisciFoto(event, previewId, dataKey) {
+  const file = event.target.files[0];
+  if (!file) return;
 
-      localStorage.removeItem(STORAGE_KEY);
-      localStorage.removeItem(DRAWING_KEY);
+  const reader = new FileReader();
 
-      fotoData = {};
+  reader.onload = (e) => {
+    const img = new Image();
 
-      document.getElementById("sopralluogoForm").reset();
-      document.getElementById("protocollo").value = "IT-FL-";
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      const maxWidth = 900;
+      const scale = Math.min(1, maxWidth / img.width);
 
-      impostaDataOdierna();
-      ripristinaPreviewFoto();
-      pulisciDisegno();
-      controllaPotenza();
-
-      currentStep = 0;
-      aggiornaStep();
-
-      alert("Bozza cancellata.");
-    }
-
-    function usaGeolocalizzazione() {
-      if (!navigator.geolocation) {
-        alert("Geolocalizzazione non supportata dal dispositivo.");
-        return;
-      }
-
-      navigator.geolocation.getCurrentPosition(
-        function (position) {
-          const lat = position.coords.latitude.toFixed(6);
-          const lng = position.coords.longitude.toFixed(6);
-          const precisione = Math.round(position.coords.accuracy);
-
-          document.getElementById("latitudine").value = lat;
-          document.getElementById("longitudine").value = lng;
-          document.getElementById("precisioneGps").value = precisione + " m";
-
-          aggiornaMapsLink();
-          salvaBozzaSilenziosa();
-
-          alert("Posizione rilevata correttamente.");
-        },
-        function () {
-          alert("Impossibile rilevare la posizione. Verifica i permessi GPS del dispositivo.");
-        },
-        {
-          enableHighAccuracy: true,
-          timeout: 12000,
-          maximumAge: 0
-        }
-      );
-    }
-
-    function aggiornaMapsLink() {
-      const lat = document.getElementById("latitudine").value;
-      const lng = document.getElementById("longitudine").value;
-      const link = document.getElementById("mapsLink");
-
-      if (lat && lng) {
-        link.href = "https://www.google.com/maps?q=" + encodeURIComponent(lat + "," + lng);
-        link.style.display = "inline-flex";
-      } else {
-        link.style.display = "none";
-      }
-    }
-
-    function controllaPotenza() {
-      const richiesta = parseFloat(document.getElementById("potenzaRichiesta").value);
-      const contatore = parseFloat(document.getElementById("potenzaImpiegata").value);
-
-      const mostraAvviso = !isNaN(richiesta) && !isNaN(contatore) && richiesta > contatore;
-
-      const powerWarning = document.getElementById("powerWarning");
-      const summaryWarning = document.getElementById("summaryWarning");
-
-      if (powerWarning) {
-        powerWarning.classList.toggle("show", mostraAvviso);
-      }
-
-      if (summaryWarning) {
-        summaryWarning.classList.toggle("show", mostraAvviso);
-      }
-    }
-
-    function gestisciFoto(event, previewId, dataKey) {
-      const file = event.target.files[0];
-
-      if (!file) {
-        return;
-      }
-
-      const reader = new FileReader();
-
-      reader.onload = function (e) {
-        const img = new Image();
-
-        img.onload = function () {
-          const canvas = document.createElement("canvas");
-          const maxWidth = 900;
-          const scale = Math.min(1, maxWidth / img.width);
-
-          canvas.width = img.width * scale;
-          canvas.height = img.height * scale;
-
-          const ctx = canvas.getContext("2d");
-          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-          const dataUrl = canvas.toDataURL("image/jpeg", 0.65);
-
-          fotoData[dataKey] = dataUrl;
-          mostraPreview(previewId, dataUrl);
-          salvaBozzaSilenziosa();
-        };
-
-        img.src = e.target.result;
-      };
-
-      reader.readAsDataURL(file);
-    }
-
-    function mostraPreview(previewId, dataUrl) {
-      const preview = document.getElementById(previewId);
-
-      if (!preview) {
-        return;
-      }
-
-      if (dataUrl) {
-        preview.innerHTML = '<img src="' + dataUrl + '" alt="Foto sopralluogo">';
-      } else {
-        preview.innerHTML = "Nessuna foto caricata";
-      }
-    }
-
-    function ripristinaPreviewFoto() {
-      mostraPreview("previewTetto", fotoData.fotoTettoData);
-      mostraPreview("previewContatore", fotoData.fotoContatoreData);
-      mostraPreview("previewQuadro", fotoData.fotoQuadroData);
-      mostraPreview("previewInverter", fotoData.fotoInverterData);
-      mostraPreview("previewAccesso", fotoData.fotoAccessoData);
-      mostraPreview("previewOmbreggiamenti", fotoData.fotoOmbreggiamentiData);
-    }
-
-    function inizializzaCanvas() {
-      const canvas = document.getElementById("drawingCanvas");
-
-      if (!canvas) {
-        return;
-      }
-
-      const rect = canvas.getBoundingClientRect();
-      const ratio = window.devicePixelRatio || 1;
-
-      canvas.width = rect.width * ratio;
-      canvas.height = rect.height * ratio;
+      canvas.width = img.width * scale;
+      canvas.height = img.height * scale;
 
       const ctx = canvas.getContext("2d");
-      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
-      ctx.lineCap = "round";
-      ctx.lineJoin = "round";
-      ctx.strokeStyle = "#111111";
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-      canvas.onpointerdown = startDrawing;
-      canvas.onpointermove = draw;
-      canvas.onpointerup = stopDrawing;
-      canvas.onpointerleave = stopDrawing;
-    }
+      const dataUrl = canvas.toDataURL("image/jpeg", 0.65);
+      fotoData[dataKey] = dataUrl;
 
-    function getCanvasPoint(event) {
-      const canvas = document.getElementById("drawingCanvas");
-      const rect = canvas.getBoundingClientRect();
-
-      return {
-        x: event.clientX - rect.left,
-        y: event.clientY - rect.top
-      };
-    }
-
-    function startDrawing(event) {
-      isDrawing = true;
-
-      const point = getCanvasPoint(event);
-
-      lastX = point.x;
-      lastY = point.y;
-    }
-
-    function draw(event) {
-      if (!isDrawing) {
-        return;
-      }
-
-      const canvas = document.getElementById("drawingCanvas");
-      const ctx = canvas.getContext("2d");
-      const point = getCanvasPoint(event);
-
-      ctx.lineWidth = parseInt(document.getElementById("spessorePenna").value, 10);
-      ctx.beginPath();
-      ctx.moveTo(lastX, lastY);
-      ctx.lineTo(point.x, point.y);
-      ctx.stroke();
-
-      lastX = point.x;
-      lastY = point.y;
-    }
-
-    function stopDrawing() {
-      if (!isDrawing) {
-        return;
-      }
-
-      isDrawing = false;
-      salvaDisegno();
+      mostraPreview(previewId, dataUrl);
       salvaBozzaSilenziosa();
-    }
+    };
 
-    function salvaDisegno() {
-      const canvas = document.getElementById("drawingCanvas");
+    img.src = e.target.result;
+  };
 
-      if (!canvas) {
-        return;
-      }
+  reader.readAsDataURL(file);
+}
 
-      try {
-        localStorage.setItem(DRAWING_KEY, canvas.toDataURL("image/png"));
-      } catch (errore) {
-        console.warn("Disegno non salvato:", errore);
-      }
-    }
+function mostraPreview(previewId, dataUrl) {
+  const preview = document.getElementById(previewId);
+  if (!preview) return;
 
-    function ripristinaDisegno() {
-      const dataUrl = localStorage.getItem(DRAWING_KEY);
+  if (dataUrl) {
+    preview.innerHTML = `<img src="${dataUrl}" alt="Foto sopralluogo">`;
+  } else {
+    preview.textContent = "Nessuna foto caricata";
+  }
+}
 
-      if (!dataUrl) {
-        return;
-      }
+function ripristinaPreviewFoto() {
+  mostraPreview("previewTetto", fotoData.fotoTettoData);
+  mostraPreview("previewContatore", fotoData.fotoContatoreData);
+  mostraPreview("previewQuadro", fotoData.fotoQuadroData);
+  mostraPreview("previewInverter", fotoData.fotoInverterData);
+  mostraPreview("previewAccesso", fotoData.fotoAccessoData);
+  mostraPreview("previewOmbreggiamenti", fotoData.fotoOmbreggiamentiData);
+}
 
-      const canvas = document.getElementById("drawingCanvas");
+function inizializzaCanvas() {
+  const canvas = document.getElementById("drawingCanvas");
+  if (!canvas) return;
 
-      if (!canvas) {
-        return;
-      }
+  const rect = canvas.getBoundingClientRect();
+  const ratio = window.devicePixelRatio || 1;
+  canvas.width = rect.width * ratio;
+  canvas.height = rect.height * ratio;
 
-      const ctx = canvas.getContext("2d");
-      const img = new Image();
+  const ctx = canvas.getContext("2d");
+  ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+  ctx.lineCap = "round";
+  ctx.lineJoin = "round";
+  ctx.strokeStyle = "#111111";
 
-      img.onload = function () {
-        const rect = canvas.getBoundingClientRect();
-        ctx.drawImage(img, 0, 0, rect.width, rect.height);
-      };
+  canvas.onpointerdown = startDrawing;
+  canvas.onpointermove = draw;
+  canvas.onpointerup = stopDrawing;
+  canvas.onpointerleave = stopDrawing;
+}
 
-      img.src = dataUrl;
-    }
+function getCanvasPoint(event) {
+  const canvas = document.getElementById("drawingCanvas");
+  const rect = canvas.getBoundingClientRect();
+  return {
+    x: event.clientX - rect.left,
+    y: event.clientY - rect.top
+  };
+}
 
-    function pulisciDisegno() {
-      const canvas = document.getElementById("drawingCanvas");
+function startDrawing(event) {
+  isDrawing = true;
+  const point = getCanvasPoint(event);
+  lastX = point.x;
+  lastY = point.y;
+}
 
-      if (!canvas) {
-        return;
-      }
+function draw(event) {
+  if (!isDrawing) return;
 
-      const ctx = canvas.getContext("2d");
-      const rect = canvas.getBoundingClientRect();
+  const canvas = document.getElementById("drawingCanvas");
+  const ctx = canvas.getContext("2d");
+  const point = getCanvasPoint(event);
 
-      ctx.clearRect(0, 0, rect.width, rect.height);
-      localStorage.removeItem(DRAWING_KEY);
-      salvaBozzaSilenziosa();
-    }
+  ctx.lineWidth = parseInt(document.getElementById("spessorePenna").value, 10);
+  ctx.beginPath();
+  ctx.moveTo(lastX, lastY);
+  ctx.lineTo(point.x, point.y);
+  ctx.stroke();
 
-    function generaRiepilogo() {
-      controllaPotenza();
+  lastX = point.x;
+  lastY = point.y;
+}
 
-      const dati = raccogliDatiForm();
-      const summaryBox = document.getElementById("summaryBox");
+function stopDrawing() {
+  if (!isDrawing) return;
+  isDrawing = false;
+  salvaDisegno();
+  salvaBozzaSilenziosa();
+}
 
-      const righe = [
-        ["Protocollo", dati.protocollo],
-        ["Tecnico", dati.tecnico],
-        ["Data sopralluogo", dati.data],
-        ["Referente", dati.referente],
-        ["Provenienza", dati.provenienza],
-        ["Cliente", dati.nomeCliente],
-        ["Telefono", dati.telefono],
-        ["Indirizzo", dati.indirizzo],
-        ["Città", dati.citta],
-        ["Coordinate", dati.latitudine && dati.longitudine ? dati.latitudine + ", " + dati.longitudine : ""],
-        ["Tipologia immobile", dati.tipologiaImmobile],
-        ["Stato immobile", dati.statoImmobile],
-        ["Potenza richiesta", dati.potenzaRichiesta ? dati.potenzaRichiesta + " kWp" : ""],
-        ["Potenza contatore", dati.potenzaImpiegata ? dati.potenzaImpiegata + " kW" : ""],
-        ["Accumulo", dati.accumulo],
-        ["Uso immobile", dati.usoImmobile],
-        ["Vincoli", dati.vincoli],
-        ["Tetto accessibile", dati.tettoAccessibile],
-        ["Accessibilità", dati.accessibilita],
-        ["Gru", dati.gru],
-        ["Cestello grande", dati.cestelloGrande],
-        ["Cestello piccolo", dati.cestelloPiccolo],
-        ["Conformità 37/08", dati.conformita3708],
-        ["Impianto di terra", dati.impiantoTerra],
-        ["Scariche atmosferiche", dati.scaricheAtmosferiche],
-        ["Consumo annuo", dati.consumoAnnuo ? dati.consumoAnnuo + " kWh" : ""],
-        ["Contatore elettrico", dati.posizioneContatore],
-        ["Quadro elettrico", dati.posizioneQuadro],
-        ["Spazio altro contatore", dati.spazioAltroContatore],
-        ["Ipotesi inverter", dati.ipotesiInverter],
-        ["Quadro AC FV", dati.posizioneQuadroAcFv],
-        ["Distanza moduli", dati.distanzaModuli ? dati.distanzaModuli + " m" : ""],
-        ["Distanza quadro-inverter", dati.distanzaQuadroInverter ? dati.distanzaQuadroInverter + " m" : ""],
-        ["Distanza contatore-quadro", dati.distanzaContatoreQuadro ? dati.distanzaContatoreQuadro + " m" : ""],
-        ["Locale materiali", dati.localeMateriali],
-        ["Sicurezza", dati.sicurezza],
-        ["Tipo installazione", dati.tipoInstallazione],
-        ["Tipo tetto", dati.tipoTetto],
-        ["Copertura", dati.copertura],
-        ["Altezza tetto piano", dati.altezzaTettoPiano ? dati.altezzaTettoPiano + " m" : ""],
-        ["Balaustra", dati.balaustra],
-        ["Altezza balaustra", dati.altezzaBalaustra ? dati.altezzaBalaustra + " cm" : ""],
-        ["Sottocostruzione", dati.sottocostruzione],
-        ["Superficie utilizzabile", dati.superficieUtilizzabile ? dati.superficieUtilizzabile + " mq" : ""],
-        ["Ombreggiamenti", dati.ombreggiamenti],
-        ["Osservazioni", dati.osservazioni]
-      ];
+function salvaDisegno() {
+  const canvas = document.getElementById("drawingCanvas");
+  if (!canvas) return;
 
-      summaryBox.innerHTML = righe.map(function (riga) {
-        return `
-          <div class="summary-row">
-            <strong>${escapeHtml(riga[0])}</strong>
-            <span>${escapeHtml(riga[1] || "-")}</span>
-          </div>
-        `;
-      }).join("");
-    }
+  try {
+    localStorage.setItem(DRAWING_KEY, canvas.toDataURL("image/png"));
+  } catch (errore) {
+    console.warn("Disegno non salvato:", errore);
+  }
+}
 
-    function preparaEmail() {
-      salvaBozzaSilenziosa();
-      generaRiepilogo();
+function ripristinaDisegno() {
+  const dataUrl = localStorage.getItem(DRAWING_KEY);
+  if (!dataUrl) return;
 
-      const dati = raccogliDatiForm();
-      const email = dati.emailIngegnere || "";
-      const oggetto = "Sopralluogo Flora - " + (dati.nomeCliente || "Cliente") + " - " + (dati.protocollo || "IT-FL");
+  const canvas = document.getElementById("drawingCanvas");
+  if (!canvas) return;
 
-      let corpo = "";
-      corpo += "Nuova pratica sopralluogo Flora%0D%0A%0D%0A";
-      corpo += "Protocollo: " + encodeURIComponent(dati.protocollo || "-") + "%0D%0A";
-      corpo += "Tecnico: " + encodeURIComponent(dati.tecnico || "-") + "%0D%0A";
-      corpo += "Data sopralluogo: " + encodeURIComponent(dati.data || "-") + "%0D%0A";
-      corpo += "Cliente: " + encodeURIComponent(dati.nomeCliente || "-") + "%0D%0A";
-      corpo += "Telefono: " + encodeURIComponent(dati.telefono || "-") + "%0D%0A";
-      corpo += "Indirizzo: " + encodeURIComponent(dati.indirizzo || "-") + "%0D%0A";
-      corpo += "Città: " + encodeURIComponent(dati.citta || "-") + "%0D%0A";
-      corpo += "Coordinate: " + encodeURIComponent((dati.latitudine && dati.longitudine) ? dati.latitudine + ", " + dati.longitudine : "-") + "%0D%0A";
-      corpo += "Potenza richiesta: " + encodeURIComponent((dati.potenzaRichiesta || "-") + " kWp") + "%0D%0A";
-      corpo += "Potenza contatore: " + encodeURIComponent((dati.potenzaImpiegata || "-") + " kW") + "%0D%0A";
-      corpo += "Tipo installazione: " + encodeURIComponent(dati.tipoInstallazione || "-") + "%0D%0A";
-      corpo += "Tipo tetto: " + encodeURIComponent(dati.tipoTetto || "-") + "%0D%0A";
-      corpo += "Copertura: " + encodeURIComponent(dati.copertura || "-") + "%0D%0A";
-      corpo += "Osservazioni: " + encodeURIComponent(dati.osservazioni || "-") + "%0D%0A%0D%0A";
+  const ctx = canvas.getContext("2d");
+  const img = new Image();
 
-      const richiesta = parseFloat(dati.potenzaRichiesta);
-      const contatore = parseFloat(dati.potenzaImpiegata);
+  img.onload = () => {
+    const rect = canvas.getBoundingClientRect();
+    ctx.drawImage(img, 0, 0, rect.width, rect.height);
+  };
 
-      if (!isNaN(richiesta) && !isNaN(contatore) && richiesta > contatore) {
-        corpo += "AVVISO POTENZA:%0D%0A";
-        corpo += "La potenza impianto richiesta e superiore alla potenza impegnata del contatore. ";
-        corpo += "Il cliente deve fare richiesta di aumento di potenza del contatore. Spesa a carico del committente.%0D%0A%0D%0A";
-      }
+  img.src = dataUrl;
+}
 
-      window.location.href = "mailto:" + encodeURIComponent(email) + "?subject=" + encodeURIComponent(oggetto) + "&body=" + corpo;
-    }
+function pulisciDisegno() {
+  const canvas = document.getElementById("drawingCanvas");
+  if (!canvas) return;
 
-    function escapeHtml(value) {
-      return String(value)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-    }
+  const ctx = canvas.getContext("2d");
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  localStorage.removeItem(DRAWING_KEY);
+  salvaBozzaSilenziosa();
+}
+
+function generaRiepilogo() {
+  controllaPotenza();
+
+  const dati = raccogliDatiForm();
+  const summaryBox = document.getElementById("summaryBox");
+
+  const righe = [
+    ["Protocollo", dati.protocollo],
+    ["Tecnico", dati.tecnico],
+    ["Data sopralluogo", dati.data],
+    ["Cliente", dati.nomeCliente],
+    ["Telefono", dati.telefono],
+    ["Indirizzo", dati.indirizzo],
+    ["Città", dati.citta],
+    ["Coordinate", dati.latitudine && dati.longitudine ? `${dati.latitudine}, ${dati.longitudine}` : ""],
+    ["Tipologia immobile", dati.tipologiaImmobile],
+    ["Stato immobile", dati.statoImmobile],
+    ["Potenza richiesta", dati.potenzaRichiesta ? `${dati.potenzaRichiesta} kWp` : ""],
+    ["Potenza contatore", dati.potenzaImpiegata ? `${dati.potenzaImpiegata} kW` : ""],
+    ["Accumulo", dati.accumulo],
+    ["Vincoli", dati.vincoli],
+    ["Tetto accessibile", dati.tettoAccessibile],
+    ["Tipo installazione", dati.tipoInstallazione],
+    ["Tipo tetto", dati.tipoTetto],
+    ["Copertura", dati.copertura],
+    ["Superficie utilizzabile", dati.superficieUtilizzabile ? `${dati.superficieUtilizzabile} mq` : ""],
+    ["Ombreggiamenti", dati.ombreggiamenti],
+    ["Osservazioni", dati.osservazioni]
+  ];
+
+  summaryBox.innerHTML = righe.map(([label, value]) => `
+    <div class="summary-row">
+      <strong>${escapeHtml(label)}</strong>
+      <span>${escapeHtml(value || "-")}</span>
+    </div>
+  `).join("");
+}
+
+function preparaEmail() {
+  salvaBozzaSilenziosa();
+  generaRiepilogo();
+
+  const dati = raccogliDatiForm();
+  const email = dati.emailIngegnere || "fotovoltaico@florambiente.it";
+  const protocollo = dati.protocollo || "non indicato";
+  const indirizzo = dati.indirizzo || "indirizzo non indicato";
+  const citta = dati.citta ? " - " + dati.citta : "";
+  const oggetto = `Nuovo sopralluogo fotovoltaico - ${protocollo}`;
+
+  const richiesta = parseFloat(dati.potenzaRichiesta);
+  const contatore = parseFloat(dati.potenzaImpiegata);
+  const avvisoPotenza = !Number.isNaN(richiesta) && !Number.isNaN(contatore) && richiesta > contatore;
+
+  const righe = [
+    "Salve,",
+    "",
+    `è stato appena caricato un nuovo sopralluogo con protocollo ${protocollo} presso ${indirizzo}${citta}.`,
+    "",
+    "Di seguito i dati principali della pratica.",
+    "",
+    "DATI PRATICA",
+    `Protocollo: ${valoreMail(dati.protocollo)}`,
+    `Tecnico compilatore: ${valoreMail(dati.tecnico)}`,
+    `Data sopralluogo: ${valoreMail(dati.data)}`,
+    `Referente: ${valoreMail(dati.referente)}`,
+    `Data ricezione: ${valoreMail(dati.dataRicezione)}`,
+    `Provenienza richiesta: ${valoreMail(dati.provenienza)}`,
+    "",
+    "COMMITTENTE E LUOGO INSTALLAZIONE",
+    `Nome e Cognome: ${valoreMail(dati.nomeCliente)}`,
+    `Telefono: ${valoreMail(dati.telefono)}`,
+    `Indirizzo installazione: ${valoreMail(dati.indirizzo)}`,
+    `Città: ${valoreMail(dati.citta)}`,
+    `Coordinate GPS: ${dati.latitudine && dati.longitudine ? `${dati.latitudine}, ${dati.longitudine}` : "-"}`,
+    "",
+    "TIPOLOGIA INTERVENTO",
+    `Tipologia immobile: ${valoreMail(dati.tipologiaImmobile)}`,
+    `Stato immobile: ${valoreMail(dati.statoImmobile)}`,
+    "",
+    "CARATTERISTICHE GENERALI",
+    `Potenza impianto richiesta: ${valoreMail(dati.potenzaRichiesta)} kWp`,
+    `Accumulo richiesto: ${valoreMail(dati.accumulo)}`,
+    `Uso immobile: ${valoreMail(dati.usoImmobile)}`,
+    `Altro uso immobile: ${valoreMail(dati.usoAltro)}`,
+    `Vincoli architettonici/paesaggistici: ${valoreMail(dati.vincoli)}`,
+    `Tetto accessibile: ${valoreMail(dati.tettoAccessibile)}`,
+    `Accessibilità moduli: ${valoreMail(dati.accessibilita)}`,
+    `Gru necessaria: ${valoreMail(dati.gru)}`,
+    `Cestello grande: ${valoreMail(dati.cestelloGrande)}`,
+    `Cestello piccolo: ${valoreMail(dati.cestelloPiccolo)}`,
+    "",
+    "IMPIANTO ELETTRICO",
+    `Conformità 37/08: ${valoreMail(dati.conformita3708)}`,
+    `Impianto di terra: ${valoreMail(dati.impiantoTerra)}`,
+    `Protezione scariche atmosferiche: ${valoreMail(dati.scaricheAtmosferiche)}`,
+    `Potenza impegnata contatore: ${valoreMail(dati.potenzaImpiegata)} kW`,
+    `Consumo annuo: ${valoreMail(dati.consumoAnnuo)} kWh`,
+    `Posizione contatore elettrico: ${valoreMail(dati.posizioneContatore)}`,
+    `Posizione quadro elettrico: ${valoreMail(dati.posizioneQuadro)}`,
+    `Spazio per altro contatore: ${valoreMail(dati.spazioAltroContatore)}`,
+    "",
+    "DATI TECNICI INSTALLAZIONE",
+    `Ipotesi posizionamento inverter: ${valoreMail(dati.ipotesiInverter)}`,
+    `Posizione quadro AC FV: ${valoreMail(dati.posizioneQuadroAcFv)}`,
+    `Distanza dai moduli: ${valoreMail(dati.distanzaModuli)} m`,
+    `Distanza quadro generale-inverter: ${valoreMail(dati.distanzaQuadroInverter)} m`,
+    `Distanza contatore-quadro generale: ${valoreMail(dati.distanzaContatoreQuadro)} m`,
+    `Locale materiali: ${valoreMail(dati.localeMateriali)}`,
+    `Sicurezza: ${valoreMail(dati.sicurezza)}`,
+    `Altro sicurezza: ${valoreMail(dati.sicurezzaAltro)}`,
+    "",
+    "TETTO E COPERTURA",
+    `Tipo installazione: ${valoreMail(dati.tipoInstallazione)}`,
+    `Altro tipo installazione: ${valoreMail(dati.tipoInstallazioneAltro)}`,
+    `Tipo tetto: ${valoreMail(dati.tipoTetto)}`,
+    `Copertura: ${valoreMail(dati.copertura)}`,
+    `Altro copertura: ${valoreMail(dati.coperturaAltro)}`,
+    `Altezza tetto piano: ${valoreMail(dati.altezzaTettoPiano)} m`,
+    `Balaustra: ${valoreMail(dati.balaustra)}`,
+    `Altezza balaustra: ${valoreMail(dati.altezzaBalaustra)} cm`,
+    `Sottocostruzione: ${valoreMail(dati.sottocostruzione)}`,
+    `Altro sottocostruzione: ${valoreMail(dati.sottocostruzioneAltro)}`,
+    `Superficie utilizzabile: ${valoreMail(dati.superficieUtilizzabile)} mq`,
+    `Possibili ombreggiamenti: ${valoreMail(dati.ombreggiamenti)}`,
+    "",
+    "OSSERVAZIONI",
+    valoreMail(dati.osservazioni),
+    ""
+  ];
+
+  if (avvisoPotenza) {
+    righe.push(
+      "AVVISO POTENZA",
+      "La potenza impianto richiesta è superiore alla potenza impegnata del contatore.",
+      "Il cliente deve fare richiesta di aumento di potenza del contatore. Spesa a carico del committente.",
+      ""
+    );
+  }
+
+  righe.push("Cordiali saluti.");
+
+  window.location.href = `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(oggetto)}&body=${encodeURIComponent(righe.join("\n"))}`;
+}
+
+function valoreMail(value) {
+  if (value === undefined || value === null || String(value).trim() === "") {
+    return "-";
+  }
+  return String(value).trim();
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
   </script>
-
 </body>
 </html>
