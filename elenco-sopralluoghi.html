@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#31a843">
+  <title>Elenco sopralluoghi - Flora</title>
+
+  <style>
+    :root {
+      --verde-flora: #31a843;
+      --verde-scuro: #238534;
+      --verde-soft: #eaf8ee;
+      --verde-extra-soft: #f5fcf7;
+      --bianco: #ffffff;
+      --nero: #111111;
+      --testo: #1f2933;
+      --testo-soft: #667085;
+      --bordo: #e4e7ec;
+      --rosso: #b42318;
+      --rosso-soft: #fff4f2;
+      --giallo: #b54708;
+      --giallo-soft: #fff7e6;
+      --ombra-card: 0 22px 60px rgba(16, 24, 40, 0.12);
+      --ombra-soft: 0 12px 30px rgba(49, 168, 67, 0.16);
+      --radius-xl: 30px;
+      --radius-lg: 22px;
+      --radius-md: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html {
+      font-size: 16px;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--testo);
+      background:
+        radial-gradient(circle at top left, rgba(49, 168, 67, 0.18), transparent 34%),
+        radial-gradient(circle at bottom right, rgba(49, 168, 67, 0.14), transparent 30%),
+        linear-gradient(135deg, #f8fbf9 0%, #eef3f0 100%);
+      overflow-x: hidden;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      border-radius: 999px;
+      pointer-events: none;
+      z-index: 0;
+      filter: blur(2px);
+    }
+
+    body::before {
+      width: 360px;
+      height: 360px;
+      top: 90px;
+      left: -160px;
+      background: rgba(49, 168, 67, 0.10);
+    }
+
+    body::after {
+      width: 420px;
+      height: 420px;
+      right: -190px;
+      bottom: -160px;
+      background: rgba(49, 168, 67, 0.12);
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .app {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .app-header {
+      padding: 24px 18px 18px;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.76);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(228, 231, 236, 0.9);
+    }
+
+    .logo {
+      width: min(220px, 64vw);
+      height: auto;
+      display: block;
+      margin: 0 auto 14px;
+      object-fit: contain;
+    }
+
+    .app-header h1 {
+      font-size: clamp(1.45rem, 3vw, 2rem);
+      color: var(--verde-flora);
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      line-height: 1.15;
+    }
+
+    .app-header p {
+      margin-top: 8px;
+      font-size: clamp(0.95rem, 2vw, 1.05rem);
+      color: var(--testo-soft);
+    }
+
+    .main {
+      flex: 1;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: clamp(18px, 4vw, 44px) 16px 42px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1080px;
+    }
+
+    .top-actions {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .back-button,
+    .top-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 44px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(49, 168, 67, 0.28);
+      background: rgba(255, 255, 255, 0.82);
+      color: var(--verde-scuro);
+      font-size: 0.92rem;
+      font-weight: 800;
+      text-decoration: none;
+      box-shadow: 0 8px 20px rgba(16, 24, 40, 0.06);
+    }
+
+    .top-button.primary {
+      background: linear-gradient(135deg, var(--verde-flora), var(--verde-scuro));
+      color: var(--bianco);
+      border-color: var(--verde-flora);
+      box-shadow: var(--ombra-soft);
+    }
+
+    .top-right {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .glass-card {
+      position: relative;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.93);
+      border: 1px solid rgba(255, 255, 255, 0.85);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--ombra-card);
+      padding: clamp(24px, 4.5vw, 42px);
+    }
+
+    .glass-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(120deg, rgba(49, 168, 67, 0.09), transparent 38%),
+        radial-gradient(circle at 92% 8%, rgba(49, 168, 67, 0.14), transparent 22%);
+      pointer-events: none;
+    }
+
+    .card-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .badge,
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 36px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: var(--verde-soft);
+      color: var(--verde-scuro);
+      font-size: 0.85rem;
+      font-weight: 800;
+    }
+
+    .badge {
+      margin-bottom: 18px;
+    }
+
+    .badge-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--verde-flora);
+      box-shadow: 0 0 0 5px rgba(49, 168, 67, 0.14);
+    }
+
+    h2 {
+      font-size: clamp(1.45rem, 3vw, 1.9rem);
+      margin-bottom: 10px;
+      color: var(--nero);
+      letter-spacing: -0.4px;
+    }
+
+    .subtitle {
+      max-width: 760px;
+      font-size: clamp(0.98rem, 2vw, 1.08rem);
+      color: var(--testo-soft);
+      line-height: 1.6;
+      margin-bottom: 26px;
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      min-height: 48px;
+      padding: 12px 13px;
+      border: 1.5px solid var(--bordo);
+      border-radius: 14px;
+      background: var(--bianco);
+      color: var(--testo);
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    input:focus,
+    textarea:focus {
+      border-color: var(--verde-flora);
+      box-shadow: 0 0 0 4px rgba(49, 168, 67, 0.12);
+    }
+
+    .counter {
+      min-height: 48px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: var(--verde-soft);
+      color: var(--verde-scuro);
+      font-size: 0.92rem;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .status-box,
+    .empty-box,
+    .warning-box {
+      padding: 16px;
+      border-radius: 18px;
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+
+    .status-box {
+      background: var(--verde-extra-soft);
+      border: 1px solid rgba(49, 168, 67, 0.18);
+      color: var(--testo-soft);
+    }
+
+    .empty-box {
+      background: var(--bianco);
+      border: 1.5px dashed rgba(49, 168, 67, 0.35);
+      color: var(--testo-soft);
+      text-align: center;
+    }
+
+    .warning-box {
+      background: var(--giallo-soft);
+      border: 1.5px solid rgba(181, 71, 8, 0.28);
+      color: var(--giallo);
+      font-weight: 800;
+    }
+
+    .list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .item {
+      background: rgba(255, 255, 255, 0.86);
+      border: 1.5px solid var(--bordo);
+      border-radius: 20px;
+      padding: 16px;
+      display: grid;
+      gap: 14px;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+
+    .item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 30px rgba(16, 24, 40, 0.10);
+      border-color: rgba(49, 168, 67, 0.35);
+    }
+
+    .item-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .protocol {
+      font-size: 1.08rem;
+      font-weight: 900;
+      color: var(--nero);
+      margin-bottom: 5px;
+    }
+
+    .client {
+      font-size: 0.95rem;
+      color: var(--testo-soft);
+      line-height: 1.4;
+    }
+
+    .item-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .mini {
+      padding: 10px;
+      border-radius: 14px;
+      background: var(--verde-extra-soft);
+      border: 1px solid rgba(49, 168, 67, 0.14);
+    }
+
+    .mini strong {
+      display: block;
+      color: var(--nero);
+      font-size: 0.78rem;
+      margin-bottom: 4px;
+    }
+
+    .mini span {
+      display: block;
+      color: var(--testo-soft);
+      font-size: 0.9rem;
+      line-height: 1.35;
+      word-break: break-word;
+    }
+
+    .item-actions,
+    .detail-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .button {
+      min-height: 44px;
+      padding: 10px 14px;
+      border-radius: 14px;
+      border: 1.5px solid transparent;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 900;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .button:hover,
+    .top-button:hover,
+    .back-button:hover {
+      transform: translateY(-2px);
+    }
+
+    .button:active,
+    .top-button:active,
+    .back-button:active {
+      transform: scale(0.98);
+    }
+
+    .button.primary {
+      background: linear-gradient(135deg, var(--verde-flora), var(--verde-scuro));
+      color: var(--bianco);
+      box-shadow: var(--ombra-soft);
+    }
+
+    .button.secondary {
+      background: var(--bianco);
+      color: var(--verde-scuro);
+      border-color: rgba(49, 168, 67, 0.35);
+    }
+
+    .button.danger {
+      background: #fff5f5;
+      color: var(--rosso);
+      border-color: #ffc9c9;
+    }
+
+    .detail-view {
+      display: none;
+    }
+
+    .detail-view.active {
+      display: block;
+    }
+
+    .detail-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .detail-title h2 {
+      margin-bottom: 6px;
+    }
+
+    .detail-title p {
+      color: var(--testo-soft);
+      line-height: 1.45;
+    }
+
+    .section {
+      background: rgba(255, 255, 255, 0.82);
+      border: 1px solid rgba(228, 231, 236, 0.95);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-bottom: 18px;
+    }
+
+    .section-header {
+      padding: 16px 18px;
+      background: linear-gradient(135deg, var(--verde-flora), var(--verde-scuro));
+      color: var(--bianco);
+    }
+
+    .section-header h3 {
+      font-size: clamp(1.05rem, 2.2vw, 1.25rem);
+      line-height: 1.2;
+    }
+
+    .section-body {
+      padding: 18px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 14px;
+      background: var(--bianco);
+      border: 1px solid #eef0f2;
+      line-height: 1.4;
+    }
+
+    .row strong {
+      color: var(--nero);
+      font-size: 0.9rem;
+    }
+
+    .row span {
+      color: var(--testo-soft);
+      word-break: break-word;
+      white-space: pre-wrap;
+    }
+
+    .media-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .media-card {
+      padding: 14px;
+      border-radius: 16px;
+      background: var(--bianco);
+      border: 1.5px solid var(--bordo);
+      line-height: 1.45;
+    }
+
+    .media-card strong {
+      display: block;
+      color: var(--nero);
+      margin-bottom: 6px;
+    }
+
+    .media-card span {
+      color: var(--testo-soft);
+      font-size: 0.92rem;
+    }
+
+    footer {
+      text-align: center;
+      padding: 18px 16px 26px;
+      font-size: 0.85rem;
+      color: #667085;
+    }
+
+    @media (max-width: 900px) {
+      .item-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .detail-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .media-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .app-header {
+        padding: 22px 14px 18px;
+      }
+
+      .logo {
+        width: min(190px, 70vw);
+      }
+
+      .main {
+        padding-left: 12px;
+        padding-right: 12px;
+      }
+
+      .top-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .top-right {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+
+      .back-button,
+      .top-button {
+        width: 100%;
+      }
+
+      .glass-card {
+        border-radius: 24px;
+        padding: 20px 14px;
+      }
+
+      .toolbar {
+        grid-template-columns: 1fr;
+      }
+
+      .item-top,
+      .detail-header {
+        flex-direction: column;
+      }
+
+      .item-grid,
+      .media-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .item-actions,
+      .detail-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+
+      .button {
+        width: 100%;
+      }
+
+      .row {
+        grid-template-columns: 1fr;
+        gap: 5px;
+      }
+    }
+
+    @media print {
+      body {
+        background: #ffffff;
+      }
+
+      body::before,
+      body::after,
+      .app-header,
+      .top-actions,
+      .toolbar,
+      .detail-actions,
+      footer,
+      .no-print {
+        display: none !important;
+      }
+
+      .main {
+        padding: 0;
+      }
+
+      .glass-card {
+        padding: 0;
+        box-shadow: none;
+        border: none;
+      }
+
+      .glass-card::before {
+        display: none;
+      }
+
+      .section {
+        break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <img src="assets/logo-flora.png" alt="Logo Flora" class="logo">
+      <h1>Elenco sopralluoghi</h1>
+      <p>Archivio online delle pratiche salvate</p>
+    </header>
+
+    <main class="main">
+      <div class="container">
+        <div class="top-actions no-print">
+          <a href="index.html" class="back-button">‹ Torna alla Home</a>
+          <div class="top-right">
+            <button class="top-button" type="button" id="refreshButton">Aggiorna elenco</button>
+            <a href="nuovo-sopralluogo.html" class="top-button primary">＋ Nuovo sopralluogo</a>
+          </div>
+        </div>
+
+        <section class="glass-card">
+          <div class="card-content">
+            <div id="listView">
+              <div class="badge"><span class="badge-dot"></span>Firebase Firestore</div>
+              <h2>Archivio sopralluoghi</h2>
+              <p class="subtitle">
+                Qui trovi i sopralluoghi conclusi e salvati online. Puoi cercare una pratica,
+                aprire il dettaglio completo, ristampare i dati o preparare nuovamente l'email.
+              </p>
+
+              <div id="connectionStatus" class="status-box">Caricamento sopralluoghi da Firebase...</div>
+
+              <div class="toolbar">
+                <input type="search" id="searchInput" placeholder="Cerca per protocollo, cliente, indirizzo, città o tecnico">
+                <div class="counter" id="counter">0 pratiche</div>
+              </div>
+
+              <div id="listaSopralluoghi" class="list"></div>
+            </div>
+
+            <div id="detailView" class="detail-view"></div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer>Flora Multiservice S.r.l. - App sopralluoghi</footer>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+    import {
+      getFirestore,
+      collection,
+      getDocs,
+      onSnapshot,
+      deleteDoc,
+      doc
+    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAnXomfR09B6BG0bbBmkKbFpB1kPwNIba4",
+      authDomain: "app-soprallugo.firebaseapp.com",
+      projectId: "app-soprallugo",
+      storageBucket: "app-soprallugo.firebasestorage.app",
+      messagingSenderId: "364392849459",
+      appId: "1:364392849459:web:85181dff88d45e4ba48346"
+    };
+
+    const firebaseApp = initializeApp(firebaseConfig);
+    const db = getFirestore(firebaseApp);
+    const FIRESTORE_COLLECTION = "sopralluoghi";
+    const EMAIL_DESTINATARIO = "fotovoltaico@florambiente.it";
+
+    let elenco = [];
+    let dettaglioCorrente = null;
+    let unsubscribe = null;
+
+    window.addEventListener("DOMContentLoaded", () => {
+      collegaEventi();
+      ascoltaSopralluoghiRealtime();
+    });
+
+    function collegaEventi() {
+      document.getElementById("searchInput").addEventListener("input", renderLista);
+      document.getElementById("refreshButton").addEventListener("click", caricaSopralluoghiUnaVolta);
+    }
+
+    function ascoltaSopralluoghiRealtime() {
+      impostaStato("Connessione a Firebase in corso...");
+
+      try {
+        const riferimento = collection(db, FIRESTORE_COLLECTION);
+
+        unsubscribe = onSnapshot(
+          riferimento,
+          (snapshot) => {
+            elenco = snapshot.docs.map((documento) => normalizzaDocumento(documento.id, documento.data()));
+            ordinaElenco();
+            renderLista();
+            impostaStato("Elenco aggiornato online.");
+          },
+          (errore) => {
+            console.error("Errore ascolto Firebase:", errore);
+            impostaStato("Impossibile leggere da Firebase. Controlla le regole di Firestore e la connessione.", true);
+          }
+        );
+      } catch (errore) {
+        console.error("Errore inizializzazione ascolto:", errore);
+        impostaStato("Errore di collegamento a Firebase.", true);
+      }
+    }
+
+    async function caricaSopralluoghiUnaVolta() {
+      impostaStato("Aggiornamento elenco in corso...");
+
+      try {
+        const snapshot = await getDocs(collection(db, FIRESTORE_COLLECTION));
+        elenco = snapshot.docs.map((documento) => normalizzaDocumento(documento.id, documento.data()));
+        ordinaElenco();
+        renderLista();
+        impostaStato("Elenco aggiornato correttamente.");
+      } catch (errore) {
+        console.error("Errore aggiornamento Firebase:", errore);
+        impostaStato("Aggiornamento non riuscito. Verifica connessione e regole Firestore.", true);
+      }
+    }
+
+    function normalizzaDocumento(id, payload) {
+      const dati = payload.dati || {};
+
+      return {
+        id,
+        protocollo: payload.protocollo || dati.protocollo || id,
+        protocolloId: payload.protocolloId || id,
+        stato: payload.stato || "concluso",
+        dataSopralluogo: payload.dataSopralluogo || dati.data || "",
+        dataRicezione: payload.dataRicezione || dati.dataRicezione || "",
+        tecnico: payload.tecnico || dati.tecnico || "",
+        referente: payload.referente || dati.referente || "",
+        clienteNome: payload.clienteNome || dati.nomeCliente || "",
+        telefono: payload.telefono || dati.telefono || "",
+        indirizzo: payload.indirizzo || dati.indirizzo || "",
+        citta: payload.citta || dati.citta || "",
+        ricerca: payload.ricerca || "",
+        potenzaRichiesta: payload.potenzaRichiesta,
+        potenzaImpiegata: payload.potenzaImpiegata,
+        avvisoAumentoPotenza: Boolean(payload.avvisoAumentoPotenza),
+        mediaLocale: payload.mediaLocale || {},
+        dati,
+        aggiornatoIl: payload.aggiornatoIl || null,
+        creatoIl: payload.creatoIl || null
+      };
+    }
+
+    function ordinaElenco() {
+      elenco.sort((a, b) => {
+        const dataA = timestampToMillis(a.aggiornatoIl) || dataToMillis(a.dataSopralluogo) || 0;
+        const dataB = timestampToMillis(b.aggiornatoIl) || dataToMillis(b.dataSopralluogo) || 0;
+        return dataB - dataA;
+      });
+    }
+
+    function renderLista() {
+      const container = document.getElementById("listaSopralluoghi");
+      const counter = document.getElementById("counter");
+      const query = document.getElementById("searchInput").value.toLowerCase().trim();
+
+      const filtrati = elenco.filter((item) => {
+        const dati = item.dati || {};
+        const testo = [
+          item.protocollo,
+          item.dataSopralluogo,
+          item.clienteNome,
+          item.telefono,
+          item.indirizzo,
+          item.citta,
+          item.tecnico,
+          item.referente,
+          item.ricerca,
+          dati.tipologiaImmobile,
+          dati.tipoInstallazione,
+          dati.tipoTetto,
+          dati.copertura
+        ].join(" ").toLowerCase();
+
+        return testo.includes(query);
+      });
+
+      counter.textContent = filtrati.length === 1 ? "1 pratica" : `${filtrati.length} pratiche`;
+
+      if (filtrati.length === 0) {
+        container.innerHTML = `
+          <div class="empty-box">
+            Nessun sopralluogo trovato. Quando concludi una nuova pratica, verrà salvata qui da Firebase.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtrati.map((item) => creaCardLista(item)).join("");
+
+      container.querySelectorAll("[data-action='detail']").forEach((button) => {
+        button.addEventListener("click", () => apriDettaglio(button.dataset.id));
+      });
+
+      container.querySelectorAll("[data-action='email']").forEach((button) => {
+        button.addEventListener("click", () => preparaEmailDaElenco(button.dataset.id));
+      });
+
+      container.querySelectorAll("[data-action='delete']").forEach((button) => {
+        button.addEventListener("click", () => eliminaSopralluogo(button.dataset.id));
+      });
+    }
+
+    function creaCardLista(item) {
+      const dati = item.dati || {};
+      const data = formattaData(item.dataSopralluogo || dati.data);
+      const cliente = item.clienteNome || dati.nomeCliente || "-";
+      const telefono = item.telefono || dati.telefono || "-";
+      const indirizzo = item.indirizzo || dati.indirizzo || "-";
+      const citta = item.citta || dati.citta || "-";
+      const potenza = dati.potenzaRichiesta ? `${dati.potenzaRichiesta} kWp` : "-";
+      const avviso = item.avvisoAumentoPotenza
+        ? `<div class="warning-box">Avviso potenza: possibile richiesta aumento contatore.</div>`
+        : "";
+
+      return `
+        <article class="item">
+          <div class="item-top">
+            <div>
+              <div class="protocol">Sopralluogo ${escapeHtml(item.protocollo || "-")}</div>
+              <div class="client">${escapeHtml(cliente)} - ${escapeHtml(indirizzo)}</div>
+            </div>
+            <span class="status-pill"><span class="badge-dot"></span>${escapeHtml(item.stato || "concluso")}</span>
+          </div>
+
+          ${avviso}
+
+          <div class="item-grid">
+            <div class="mini"><strong>Data sopralluogo</strong><span>${escapeHtml(data || "-")}</span></div>
+            <div class="mini"><strong>Cliente</strong><span>${escapeHtml(cliente)}</span></div>
+            <div class="mini"><strong>Telefono</strong><span>${escapeHtml(telefono)}</span></div>
+            <div class="mini"><strong>Città</strong><span>${escapeHtml(citta)}</span></div>
+            <div class="mini"><strong>Potenza richiesta</strong><span>${escapeHtml(potenza)}</span></div>
+            <div class="mini"><strong>Tecnico</strong><span>${escapeHtml(item.tecnico || "-")}</span></div>
+            <div class="mini"><strong>Tipo installazione</strong><span>${escapeHtml(dati.tipoInstallazione || "-")}</span></div>
+            <div class="mini"><strong>Tipo tetto</strong><span>${escapeHtml(dati.tipoTetto || "-")}</span></div>
+          </div>
+
+          <div class="item-actions">
+            <button class="button primary" type="button" data-action="detail" data-id="${escapeHtml(item.id)}">Vedi dettagli</button>
+            <button class="button secondary" type="button" data-action="email" data-id="${escapeHtml(item.id)}">Prepara email</button>
+            <button class="button danger" type="button" data-action="delete" data-id="${escapeHtml(item.id)}">Elimina</button>
+          </div>
+        </article>
+      `;
+    }
+
+    function apriDettaglio(id) {
+      const item = elenco.find((sopralluogo) => sopralluogo.id === id);
+
+      if (!item) {
+        alert("Sopralluogo non trovato.");
+        return;
+      }
+
+      dettaglioCorrente = item;
+
+      const dati = item.dati || {};
+      const listView = document.getElementById("listView");
+      const detailView = document.getElementById("detailView");
+
+      const coordinate = dati.latitudine && dati.longitudine
+        ? `${dati.latitudine}, ${dati.longitudine}`
+        : "";
+
+      const mapsButton = coordinate
+        ? `<a class="button secondary" target="_blank" rel="noopener" href="https://www.google.com/maps?q=${encodeURIComponent(coordinate)}">Apri posizione su Maps</a>`
+        : "";
+
+      const avviso = item.avvisoAumentoPotenza
+        ? `<div class="warning-box">Avviso: la potenza impianto richiesta è superiore alla potenza impegnata del contatore. Il cliente deve fare richiesta di aumento di potenza del contatore. Spesa a carico del committente.</div>`
+        : "";
+
+      detailView.innerHTML = `
+        <div class="detail-header">
+          <div class="detail-title">
+            <div class="badge"><span class="badge-dot"></span>Dettaglio pratica</div>
+            <h2>Sopralluogo ${escapeHtml(item.protocollo || "-")}</h2>
+            <p>${escapeHtml(item.clienteNome || dati.nomeCliente || "-")} - ${escapeHtml(item.indirizzo || dati.indirizzo || "-")}</p>
+          </div>
+
+          <div class="detail-actions no-print">
+            <button class="button secondary" type="button" id="backToListButton">‹ Torna elenco</button>
+            <button class="button secondary" type="button" id="printButton">Stampa</button>
+            <button class="button primary" type="button" id="detailEmailButton">Prepara email</button>
+          </div>
+        </div>
+
+        ${avviso}
+
+        <section class="section">
+          <div class="section-header"><h3>Dati pratica</h3></div>
+          <div class="section-body detail-grid">
+            ${row("Protocollo", dati.protocollo || item.protocollo)}
+            ${row("Data sopralluogo", formattaData(dati.data || item.dataSopralluogo))}
+            ${row("Tecnico compilatore", dati.tecnico || item.tecnico)}
+            ${row("Referente", dati.referente || item.referente)}
+            ${row("Data ricezione", formattaData(dati.dataRicezione || item.dataRicezione))}
+            ${row("Provenienza richiesta", dati.provenienza)}
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-header"><h3>Committente e luogo installazione</h3></div>
+          <div class="section-body detail-grid">
+            ${row("Nome e Cognome", dati.nomeCliente || item.clienteNome)}
+            ${row("Telefono", dati.telefono || item.telefono)}
+            ${row("Indirizzo installazione", dati.indirizzo || item.indirizzo)}
+            ${row("Città", dati.citta || item.citta)}
+            ${row("Coordinate GPS", coordinate || "-")}
+            ${row("Precisione GPS", dati.precisioneGps)}
+          </div>
+          <div class="section-body no-print">${mapsButton || '<span class="status-box">Nessuna coordinata GPS salvata.</span>'}</div>
+        </section>
+
+        <section class="section">
+          <div class="section-header"><h3>Tipologia intervento</h3></div>
+          <div class="section-body detail-grid">
+            ${row("Tipologia immobile", dati.tipologiaImmobile)}
+            ${row("Stato immobile", dati.statoImmobile)}
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-header"><h3>Caratteristiche generali</h3></div>
+          <div class="section-body detail-grid">
+            ${row("Potenza richiesta", dati.potenzaRichiesta ? `${dati.potenzaRichiesta} kWp` : "")}
+            ${row("Accumulo richiesto", dati.accumulo)}
+            ${row("Uso immobile", dati.usoImmobile)}
+            ${row("Altro uso immobile", dati.usoAltro)}
+            ${row("Vincoli architettonici/paesaggistici", dati.vincoli)}
+            ${row("Tetto accessibile", dati.tettoAccessibile)}
+            ${row("Accessibilità moduli", dati.accessibilita)}
+            ${row("Gru necessaria", dati.gru)}
+            ${row("Cestello grande", dati.cestelloGrande)}
+            ${row("Cestello piccolo", dati.cestelloPiccolo)}
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-header"><h3>Caratteristiche impianto elettrico</h3></div>
+          <div class="section-body detail-grid">
+            ${row("Conformità 37/08", dati.conformita3708)}
+            ${row("Impianto di terra", dati.impiantoTerra)}
+            ${row("Protezione scariche atmosferiche", dati.scaricheAtmosferiche)}
+            ${row("Potenza impegnata contatore", dati.potenzaImpiegata ? `${dati.potenzaImpiegata} kW` : "")}
+            ${row("Consumo annuo", dati.consumoAnnuo ? `${dati.consumoAnnuo} kWh` : "")}
+            ${row("Posizione contatore elettrico", dati.posizioneContatore)}
+            ${row("Posizione quadro elettrico", dati.posizioneQuadro)}
+            ${row("Spazio per altro contatore", dati.spazioAltroContatore)}
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-header"><h3>Generatore fotovoltaico, inverter, contatore</h3></div>
+          <div class="section-body detail-grid">
+            ${row("Ipotesi posizionamento inverter", dati.ipotesiInverter)}
+            ${row("Posizione quadro AC FV", dati.posizioneQuadroAcFv)}
+            ${row("Distanza dai moduli", dati.distanzaModuli ? `${dati.distanzaModuli} m` : "")}
+            ${row("Distanza quadro generale-inverter", dati.distanzaQuadroInverter ? `${dati.distanzaQuadroInverter} m` : "")}
+            ${row("Distanza contatore-quadro generale", dati.distanzaContatoreQuadro ? `${dati.distanzaContatoreQuadro} m` : "")}
+            ${row("Locale materiali", dati.localeMateriali)}
+            ${row("Sicurezza", dati.sicurezza)}
+            ${row("Altro sicurezza", dati.sicurezzaAltro)}
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-header"><h3>Tetto e copertura</h3></div>
+          <div class="section-body detail-grid">
+            ${row("Tipo installazione", dati.tipoInstallazione)}
+            ${row("Altro tipo installazione", dati.tipoInstallazioneAltro)}
+            ${row("Tipo tetto", dati.tipoTetto)}
+            ${row("Copertura", dati.copertura)}
+            ${row("Altro copertura", dati.coperturaAltro)}
+            ${row("Altezza tetto piano", dati.altezzaTettoPiano ? `${dati.altezzaTettoPiano} m` : "")}
+            ${row("Balaustra", dati.balaustra)}
+            ${row("Altezza balaustra", dati.altezzaBalaustra ? `${dati.altezzaBalaustra} cm` : "")}
+            ${row("Sottocostruzione", dati.sottocostruzione)}
+            ${row("Altro sottocostruzione", dati.sottocostruzioneAltro)}
+            ${row("Superficie utilizzabile", dati.superficieUtilizzabile ? `${dati.superficieUtilizzabile} mq` : "")}
+            ${row("Possibili ombreggiamenti", dati.ombreggiamenti)}
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-header"><h3>Osservazioni</h3></div>
+          <div class="section-body">
+            ${row("Osservazioni", dati.osservazioni)}
+          </div>
+        </section>
+
+        ${creaSezioneMedia(item)}
+      `;
+
+      document.getElementById("backToListButton").addEventListener("click", tornaElenco);
+      document.getElementById("printButton").addEventListener("click", () => window.print());
+      document.getElementById("detailEmailButton").addEventListener("click", () => preparaEmailDaElenco(item.id));
+
+      listView.style.display = "none";
+      detailView.classList.add("active");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function creaSezioneMedia(item) {
+      const media = item.mediaLocale || {};
+
+      return `
+        <section class="section">
+          <div class="section-header"><h3>Foto e disegno</h3></div>
+          <div class="section-body">
+            <div class="status-box">
+              In questa versione le foto e il disegno non vengono salvati online perché Firebase Storage non è attivo.
+              Qui viene indicato solo se erano presenti sul dispositivo al momento del salvataggio.
+            </div>
+            <div class="media-grid">
+              ${mediaRow("Foto tetto / area moduli", media.fotoTetto)}
+              ${mediaRow("Foto contatore", media.fotoContatore)}
+              ${mediaRow("Foto quadro elettrico", media.fotoQuadro)}
+              ${mediaRow("Foto area inverter", media.fotoInverter)}
+              ${mediaRow("Foto accesso tetto", media.fotoAccesso)}
+              ${mediaRow("Foto ombreggiamenti", media.fotoOmbreggiamenti)}
+              ${mediaRow("Disegno / schema", media.disegno)}
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
+    function mediaRow(label, presente) {
+      return `
+        <div class="media-card">
+          <strong>${escapeHtml(label)}</strong>
+          <span>${presente ? "Presente sul dispositivo di compilazione" : "Non presente"}</span>
+        </div>
+      `;
+    }
+
+    function tornaElenco() {
+      document.getElementById("detailView").classList.remove("active");
+      document.getElementById("detailView").innerHTML = "";
+      document.getElementById("listView").style.display = "block";
+      dettaglioCorrente = null;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    async function eliminaSopralluogo(id) {
+      const item = elenco.find((sopralluogo) => sopralluogo.id === id);
+
+      if (!item) {
+        alert("Sopralluogo non trovato.");
+        return;
+      }
+
+      const conferma = confirm(`Vuoi eliminare il sopralluogo ${item.protocollo}?`);
+
+      if (!conferma) {
+        return;
+      }
+
+      try {
+        await deleteDoc(doc(db, FIRESTORE_COLLECTION, id));
+        alert("Sopralluogo eliminato.");
+
+        if (dettaglioCorrente && dettaglioCorrente.id === id) {
+          tornaElenco();
+        }
+      } catch (errore) {
+        console.error("Errore eliminazione:", errore);
+        alert("Eliminazione non riuscita. Verifica le regole Firestore.");
+      }
+    }
+
+    function preparaEmailDaElenco(id) {
+      const item = elenco.find((sopralluogo) => sopralluogo.id === id);
+
+      if (!item) {
+        alert("Sopralluogo non trovato.");
+        return;
+      }
+
+      const dati = item.dati || {};
+      const email = EMAIL_DESTINATARIO;
+      const protocollo = dati.protocollo || item.protocollo || "non indicato";
+      const indirizzo = dati.indirizzo || item.indirizzo || "indirizzo non indicato";
+      const citta = dati.citta ? ` - ${dati.citta}` : "";
+      const oggetto = `Nuovo sopralluogo fotovoltaico - ${protocollo}`;
+
+      const richiesta = parseFloat(dati.potenzaRichiesta);
+      const contatore = parseFloat(dati.potenzaImpiegata);
+      const avvisoPotenza = !Number.isNaN(richiesta) && !Number.isNaN(contatore) && richiesta > contatore;
+
+      const righe = [
+        "Salve,",
+        "",
+        `è stato appena caricato un nuovo sopralluogo con protocollo ${protocollo} presso ${indirizzo}${citta}.`,
+        "",
+        "Di seguito i dati principali della pratica.",
+        "",
+        "DATI PRATICA",
+        `Protocollo: ${valoreMail(protocollo)}`,
+        `Tecnico compilatore: ${valoreMail(dati.tecnico)}`,
+        `Data sopralluogo: ${valoreMail(dati.data)}`,
+        `Referente: ${valoreMail(dati.referente)}`,
+        `Data ricezione: ${valoreMail(dati.dataRicezione)}`,
+        `Provenienza richiesta: ${valoreMail(dati.provenienza)}`,
+        "",
+        "COMMITTENTE E LUOGO INSTALLAZIONE",
+        `Nome e Cognome: ${valoreMail(dati.nomeCliente)}`,
+        `Telefono: ${valoreMail(dati.telefono)}`,
+        `Indirizzo installazione: ${valoreMail(dati.indirizzo)}`,
+        `Città: ${valoreMail(dati.citta)}`,
+        `Coordinate GPS: ${dati.latitudine && dati.longitudine ? `${dati.latitudine}, ${dati.longitudine}` : "-"}`,
+        "",
+        "TIPOLOGIA INTERVENTO",
+        `Tipologia immobile: ${valoreMail(dati.tipologiaImmobile)}`,
+        `Stato immobile: ${valoreMail(dati.statoImmobile)}`,
+        "",
+        "CARATTERISTICHE GENERALI",
+        `Potenza impianto richiesta: ${valoreMail(dati.potenzaRichiesta)} kWp`,
+        `Accumulo richiesto: ${valoreMail(dati.accumulo)}`,
+        `Uso immobile: ${valoreMail(dati.usoImmobile)}`,
+        `Altro uso immobile: ${valoreMail(dati.usoAltro)}`,
+        `Vincoli architettonici/paesaggistici: ${valoreMail(dati.vincoli)}`,
+        `Tetto accessibile: ${valoreMail(dati.tettoAccessibile)}`,
+        `Accessibilità moduli: ${valoreMail(dati.accessibilita)}`,
+        `Gru necessaria: ${valoreMail(dati.gru)}`,
+        `Cestello grande: ${valoreMail(dati.cestelloGrande)}`,
+        `Cestello piccolo: ${valoreMail(dati.cestelloPiccolo)}`,
+        "",
+        "IMPIANTO ELETTRICO",
+        `Conformità 37/08: ${valoreMail(dati.conformita3708)}`,
+        `Impianto di terra: ${valoreMail(dati.impiantoTerra)}`,
+        `Protezione scariche atmosferiche: ${valoreMail(dati.scaricheAtmosferiche)}`,
+        `Potenza impegnata contatore: ${valoreMail(dati.potenzaImpiegata)} kW`,
+        `Consumo annuo: ${valoreMail(dati.consumoAnnuo)} kWh`,
+        `Posizione contatore elettrico: ${valoreMail(dati.posizioneContatore)}`,
+        `Posizione quadro elettrico: ${valoreMail(dati.posizioneQuadro)}`,
+        `Spazio per altro contatore: ${valoreMail(dati.spazioAltroContatore)}`,
+        "",
+        "DATI TECNICI INSTALLAZIONE",
+        `Ipotesi posizionamento inverter: ${valoreMail(dati.ipotesiInverter)}`,
+        `Posizione quadro AC FV: ${valoreMail(dati.posizioneQuadroAcFv)}`,
+        `Distanza dai moduli: ${valoreMail(dati.distanzaModuli)} m`,
+        `Distanza quadro generale-inverter: ${valoreMail(dati.distanzaQuadroInverter)} m`,
+        `Distanza contatore-quadro generale: ${valoreMail(dati.distanzaContatoreQuadro)} m`,
+        `Locale materiali: ${valoreMail(dati.localeMateriali)}`,
+        `Sicurezza: ${valoreMail(dati.sicurezza)}`,
+        `Altro sicurezza: ${valoreMail(dati.sicurezzaAltro)}`,
+        "",
+        "TETTO E COPERTURA",
+        `Tipo installazione: ${valoreMail(dati.tipoInstallazione)}`,
+        `Altro tipo installazione: ${valoreMail(dati.tipoInstallazioneAltro)}`,
+        `Tipo tetto: ${valoreMail(dati.tipoTetto)}`,
+        `Copertura: ${valoreMail(dati.copertura)}`,
+        `Altro copertura: ${valoreMail(dati.coperturaAltro)}`,
+        `Altezza tetto piano: ${valoreMail(dati.altezzaTettoPiano)} m`,
+        `Balaustra: ${valoreMail(dati.balaustra)}`,
+        `Altezza balaustra: ${valoreMail(dati.altezzaBalaustra)} cm`,
+        `Sottocostruzione: ${valoreMail(dati.sottocostruzione)}`,
+        `Altro sottocostruzione: ${valoreMail(dati.sottocostruzioneAltro)}`,
+        `Superficie utilizzabile: ${valoreMail(dati.superficieUtilizzabile)} mq`,
+        `Possibili ombreggiamenti: ${valoreMail(dati.ombreggiamenti)}`,
+        "",
+        "OSSERVAZIONI",
+        valoreMail(dati.osservazioni),
+        ""
+      ];
+
+      if (avvisoPotenza) {
+        righe.push(
+          "AVVISO POTENZA",
+          "La potenza impianto richiesta è superiore alla potenza impegnata del contatore.",
+          "Il cliente deve fare richiesta di aumento di potenza del contatore. Spesa a carico del committente.",
+          ""
+        );
+      }
+
+      righe.push("Cordiali saluti.");
+
+      window.location.href = `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(oggetto)}&body=${encodeURIComponent(righe.join("\n"))}`;
+    }
+
+    function row(label, value) {
+      return `
+        <div class="row">
+          <strong>${escapeHtml(label)}</strong>
+          <span>${escapeHtml(value || "-")}</span>
+        </div>
+      `;
+    }
+
+    function impostaStato(testo, errore = false) {
+      const box = document.getElementById("connectionStatus");
+      box.textContent = testo;
+      box.className = errore ? "warning-box" : "status-box";
+    }
+
+    function timestampToMillis(value) {
+      if (!value) {
+        return 0;
+      }
+
+      if (typeof value.toMillis === "function") {
+        return value.toMillis();
+      }
+
+      if (typeof value.seconds === "number") {
+        return value.seconds * 1000;
+      }
+
+      return 0;
+    }
+
+    function dataToMillis(value) {
+      if (!value) {
+        return 0;
+      }
+
+      const parsed = new Date(value).getTime();
+      return Number.isNaN(parsed) ? 0 : parsed;
+    }
+
+    function formattaData(value) {
+      if (!value) {
+        return "";
+      }
+
+      if (typeof value.toDate === "function") {
+        return value.toDate().toLocaleDateString("it-IT");
+      }
+
+      const parts = String(value).split("-");
+
+      if (parts.length === 3) {
+        return `${parts[2]}/${parts[1]}/${parts[0]}`;
+      }
+
+      return String(value);
+    }
+
+    function valoreMail(value) {
+      if (value === undefined || value === null || String(value).trim() === "") {
+        return "-";
+      }
+
+      return String(value).trim();
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+  </script>
+</body>
+</html>
