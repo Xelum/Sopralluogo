@@ -1155,7 +1155,7 @@ footer {
                 <section class="section">
                   <div class="section-header"><h3>Foto sopralluogo</h3></div>
                   <div class="section-body">
-                    <div class="note-box">Le foto vengono compresse e salvate nella bozza locale del dispositivo. Il salvataggio online delle foto sarà collegato in seguito tramite Firebase Storage.</div>
+                    <div class="note-box">Le foto vengono compresse e salvate online su Firebase Firestore in documenti separati. La bozza resta disponibile anche sul dispositivo fino alla conclusione della pratica.</div>
                     <div class="photo-grid">
                       <div class="photo-card"><label for="fotoTetto">Foto tetto / area moduli</label><input type="file" id="fotoTetto" accept="image/*" capture="environment" data-preview="previewTetto" data-key="fotoTettoData"><div id="previewTetto" class="preview">Nessuna foto caricata</div></div>
                       <div class="photo-card"><label for="fotoContatore">Foto contatore</label><input type="file" id="fotoContatore" accept="image/*" capture="environment" data-preview="previewContatore" data-key="fotoContatoreData"><div id="previewContatore" class="preview">Nessuna foto caricata</div></div>
@@ -1523,7 +1523,7 @@ function gestisciFoto(event, previewId, dataKey) {
 
     img.onload = () => {
       const canvas = document.createElement("canvas");
-      const maxWidth = 900;
+      const maxWidth = 700;
       const scale = Math.min(1, maxWidth / img.width);
 
       canvas.width = img.width * scale;
@@ -1532,7 +1532,7 @@ function gestisciFoto(event, previewId, dataKey) {
       const ctx = canvas.getContext("2d");
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-      const dataUrl = canvas.toDataURL("image/jpeg", 0.65);
+      const dataUrl = canvas.toDataURL("image/jpeg", 0.45);
       fotoData[dataKey] = dataUrl;
 
       mostraPreview(previewId, dataUrl);
@@ -1828,7 +1828,16 @@ async function preparaEmail() {
 
   righe.push("Cordiali saluti.");
 
-  window.location.href = `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(oggetto)}&body=${encodeURIComponent(righe.join("\n"))}`;
+  const mailtoUrl = `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(oggetto)}&body=${encodeURIComponent(righe.join("\n"))}`;
+
+  localStorage.removeItem(STORAGE_KEY);
+  localStorage.removeItem(DRAWING_KEY);
+
+  window.location.href = mailtoUrl;
+
+  setTimeout(() => {
+    window.location.href = "index.html";
+  }, 1200);
 }
 
 async function salvaSopralluogoFirebase(dati, protocollo) {
@@ -1866,8 +1875,102 @@ async function salvaSopralluogoFirebase(dati, protocollo) {
   };
 
   await setDoc(doc(db, FIRESTORE_COLLECTION, docId), payload, { merge: true });
+  await salvaMediaFirebase(docId);
 
   return docId;
+}
+
+async function salvaMediaFirebase(docId) {
+  const disegnoData = localStorage.getItem(DRAWING_KEY) || "";
+
+  const mediaItems = [
+    {
+      id: "fotoTetto",
+      tipo: "foto",
+      titolo: "Foto tetto / area moduli",
+      dataUrl: fotoData.fotoTettoData
+    },
+    {
+      id: "fotoContatore",
+      tipo: "foto",
+      titolo: "Foto contatore",
+      dataUrl: fotoData.fotoContatoreData
+    },
+    {
+      id: "fotoQuadro",
+      tipo: "foto",
+      titolo: "Foto quadro elettrico",
+      dataUrl: fotoData.fotoQuadroData
+    },
+    {
+      id: "fotoInverter",
+      tipo: "foto",
+      titolo: "Foto area inverter",
+      dataUrl: fotoData.fotoInverterData
+    },
+    {
+      id: "fotoAccesso",
+      tipo: "foto",
+      titolo: "Foto accesso al tetto",
+      dataUrl: fotoData.fotoAccessoData
+    },
+    {
+      id: "fotoOmbreggiamenti",
+      tipo: "foto",
+      titolo: "Foto ombreggiamenti / ostacoli",
+      dataUrl: fotoData.fotoOmbreggiamentiData
+    },
+    {
+      id: "disegno",
+      tipo: "disegno",
+      titolo: "Disegno sopralluogo",
+      dataUrl: disegnoData
+    }
+  ].filter((item) => item.dataUrl);
+
+  const mediaSaltati = [];
+
+  const salvataggi = mediaItems.map((item) => {
+    const dimensione = calcolaDimensioneDataUrl(item.dataUrl);
+
+    if (dimensione > 900000) {
+      console.warn("Media troppo pesante per Firestore, non salvato online:", item.id, dimensione);
+      mediaSaltati.push(item.titolo);
+      return Promise.resolve();
+    }
+
+    return setDoc(
+      doc(db, FIRESTORE_COLLECTION, docId, "media", item.id),
+      {
+        id: item.id,
+        tipo: item.tipo,
+        titolo: item.titolo,
+        dataUrl: item.dataUrl,
+        dimensioneByte: dimensione,
+        aggiornatoIl: serverTimestamp()
+      },
+      { merge: true }
+    );
+  });
+
+  await Promise.all(salvataggi);
+
+  if (mediaSaltati.length > 0) {
+    alert(
+      "La pratica è stata salvata, ma alcuni media erano troppo pesanti per Firestore e non sono stati caricati online: " +
+      mediaSaltati.join(", ") +
+      "."
+    );
+  }
+}
+
+function calcolaDimensioneDataUrl(dataUrl) {
+  if (!dataUrl || !dataUrl.includes(",")) {
+    return 0;
+  }
+
+  const base64 = dataUrl.split(",")[1];
+  return Math.ceil((base64.length * 3) / 4);
 }
 
 function preparaDatiPerFirestore(dati, protocolloFinale) {
