@@ -814,7 +814,7 @@ footer {
       <div class="container">
         <div class="top-actions">
           <a href="index.html" class="back-button">‹ Torna alla Home</a>
-          <div class="status-pill"><span class="badge-dot"></span>Bozza locale attiva</div>
+          <div class="status-pill"><span class="badge-dot"></span>Bozza locale e salvataggio online</div>
         </div>
 
         <section class="form-card glass-card">
@@ -823,8 +823,8 @@ footer {
               <div class="badge"><span class="badge-dot"></span>Sopralluogo fotovoltaico</div>
               <h2>Scheda sopralluogo</h2>
               <p>
-                Compila la pratica in modo guidato. I dati vengono salvati sul dispositivo
-                e possono essere consultati prima della trasmissione al tecnico incaricato.
+                Compila la pratica in modo guidato. I dati vengono salvati come bozza sul dispositivo
+                e, alla conclusione, registrati online su Firebase.
               </p>
             </div>
 
@@ -1155,7 +1155,7 @@ footer {
                 <section class="section">
                   <div class="section-header"><h3>Foto sopralluogo</h3></div>
                   <div class="section-body">
-                    <div class="note-box">Le foto vengono compresse e salvate nella bozza locale del dispositivo.</div>
+                    <div class="note-box">Le foto vengono compresse e salvate nella bozza locale del dispositivo. Il salvataggio online delle foto sarà collegato in seguito tramite Firebase Storage.</div>
                     <div class="photo-grid">
                       <div class="photo-card"><label for="fotoTetto">Foto tetto / area moduli</label><input type="file" id="fotoTetto" accept="image/*" capture="environment" data-preview="previewTetto" data-key="fotoTettoData"><div id="previewTetto" class="preview">Nessuna foto caricata</div></div>
                       <div class="photo-card"><label for="fotoContatore">Foto contatore</label><input type="file" id="fotoContatore" accept="image/*" capture="environment" data-preview="previewContatore" data-key="fotoContatoreData"><div id="previewContatore" class="preview">Nessuna foto caricata</div></div>
@@ -1219,7 +1219,23 @@ footer {
     <footer>Flora Multiservice S.r.l. - App sopralluoghi</footer>
   </div>
 
-  <script>
+  <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAnXomfR09B6BG0bbBmkKbFpB1kPwNIba4",
+  authDomain: "app-soprallugo.firebaseapp.com",
+  projectId: "app-soprallugo",
+  storageBucket: "app-soprallugo.firebasestorage.app",
+  messagingSenderId: "364392849459",
+  appId: "1:364392849459:web:85181dff88d45e4ba48346"
+};
+
+const firebaseApp = initializeApp(firebaseConfig);
+const db = getFirestore(firebaseApp);
+const FIRESTORE_COLLECTION = "sopralluoghi";
+
 const STORAGE_KEY = "flora_sopralluogo_bozza";
 const DRAWING_KEY = "flora_sopralluogo_disegno";
 
@@ -1687,16 +1703,38 @@ function generaRiepilogo() {
   `).join("");
 }
 
-function preparaEmail() {
+async function preparaEmail() {
+  salvaDisegno();
   salvaBozzaSilenziosa();
   generaRiepilogo();
 
   const dati = raccogliDatiForm();
   const email = dati.emailIngegnere || "fotovoltaico@florambiente.it";
-  const protocollo = dati.protocollo || "non indicato";
+  const protocollo = normalizzaProtocollo(dati.protocollo);
   const indirizzo = dati.indirizzo || "indirizzo non indicato";
   const citta = dati.citta ? " - " + dati.citta : "";
   const oggetto = `Nuovo sopralluogo fotovoltaico - ${protocollo}`;
+
+  impostaStatoSalvataggio(true);
+
+  try {
+    await salvaSopralluogoFirebase(dati, protocollo);
+  } catch (errore) {
+    console.error("Errore salvataggio Firebase:", errore);
+
+    const continua = confirm(
+      "Il salvataggio online su Firebase non è riuscito. " +
+      "Vuoi comunque preparare la mail con i dati inseriti?"
+    );
+
+    impostaStatoSalvataggio(false);
+
+    if (!continua) {
+      return;
+    }
+  }
+
+  impostaStatoSalvataggio(false);
 
   const richiesta = parseFloat(dati.potenzaRichiesta);
   const contatore = parseFloat(dati.potenzaImpiegata);
@@ -1710,7 +1748,7 @@ function preparaEmail() {
     "Di seguito i dati principali della pratica.",
     "",
     "DATI PRATICA",
-    `Protocollo: ${valoreMail(dati.protocollo)}`,
+    `Protocollo: ${valoreMail(protocollo)}`,
     `Tecnico compilatore: ${valoreMail(dati.tecnico)}`,
     `Data sopralluogo: ${valoreMail(dati.data)}`,
     `Referente: ${valoreMail(dati.referente)}`,
@@ -1791,6 +1829,128 @@ function preparaEmail() {
   righe.push("Cordiali saluti.");
 
   window.location.href = `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(oggetto)}&body=${encodeURIComponent(righe.join("\n"))}`;
+}
+
+async function salvaSopralluogoFirebase(dati, protocollo) {
+  const protocolloFinale = normalizzaProtocollo(protocollo || dati.protocollo);
+  const docId = creaIdDocumento(protocolloFinale);
+  const datiPuliti = preparaDatiPerFirestore(dati, protocolloFinale);
+
+  const payload = {
+    protocollo: protocolloFinale,
+    protocolloId: docId,
+    stato: "concluso",
+    dataSopralluogo: datiPuliti.data || "",
+    dataRicezione: datiPuliti.dataRicezione || "",
+    tecnico: datiPuliti.tecnico || "",
+    referente: datiPuliti.referente || "",
+    clienteNome: datiPuliti.nomeCliente || "",
+    telefono: datiPuliti.telefono || "",
+    indirizzo: datiPuliti.indirizzo || "",
+    citta: datiPuliti.citta || "",
+    ricerca: creaCampoRicerca(datiPuliti, protocolloFinale),
+    potenzaRichiesta: numeroONull(datiPuliti.potenzaRichiesta),
+    potenzaImpiegata: numeroONull(datiPuliti.potenzaImpiegata),
+    avvisoAumentoPotenza: deveMostrareAvvisoPotenza(datiPuliti),
+    mediaLocale: {
+      fotoTetto: Boolean(fotoData.fotoTettoData),
+      fotoContatore: Boolean(fotoData.fotoContatoreData),
+      fotoQuadro: Boolean(fotoData.fotoQuadroData),
+      fotoInverter: Boolean(fotoData.fotoInverterData),
+      fotoAccesso: Boolean(fotoData.fotoAccessoData),
+      fotoOmbreggiamenti: Boolean(fotoData.fotoOmbreggiamentiData),
+      disegno: Boolean(localStorage.getItem(DRAWING_KEY))
+    },
+    dati: datiPuliti,
+    aggiornatoIl: serverTimestamp()
+  };
+
+  await setDoc(doc(db, FIRESTORE_COLLECTION, docId), payload, { merge: true });
+
+  return docId;
+}
+
+function preparaDatiPerFirestore(dati, protocolloFinale) {
+  const datiPuliti = { ...dati };
+
+  datiPuliti.protocollo = protocolloFinale;
+
+  delete datiPuliti.fotoData;
+  delete datiPuliti.disegno;
+
+  Object.keys(datiPuliti).forEach((chiave) => {
+    if (datiPuliti[chiave] === undefined) {
+      datiPuliti[chiave] = "";
+    }
+  });
+
+  return datiPuliti;
+}
+
+function normalizzaProtocollo(protocollo) {
+  const valore = protocollo && String(protocollo).trim()
+    ? String(protocollo).trim()
+    : `IT-FL-${Date.now()}`;
+
+  const campoProtocollo = document.getElementById("protocollo");
+  if (campoProtocollo) {
+    campoProtocollo.value = valore;
+  }
+
+  return valore;
+}
+
+function creaIdDocumento(protocollo) {
+  return String(protocollo)
+    .trim()
+    .replace(/[\/\\#?\[\]]/g, "-")
+    .replace(/\s+/g, "-") || `IT-FL-${Date.now()}`;
+}
+
+function numeroONull(value) {
+  const numero = parseFloat(value);
+  return Number.isNaN(numero) ? null : numero;
+}
+
+function deveMostrareAvvisoPotenza(dati) {
+  const richiesta = parseFloat(dati.potenzaRichiesta);
+  const contatore = parseFloat(dati.potenzaImpiegata);
+
+  return !Number.isNaN(richiesta) && !Number.isNaN(contatore) && richiesta > contatore;
+}
+
+function creaCampoRicerca(dati, protocollo) {
+  return [
+    protocollo,
+    dati.data,
+    dati.tecnico,
+    dati.referente,
+    dati.nomeCliente,
+    dati.telefono,
+    dati.indirizzo,
+    dati.citta,
+    dati.tipologiaImmobile,
+    dati.tipoInstallazione,
+    dati.tipoTetto
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+}
+
+function impostaStatoSalvataggio(inCorso) {
+  const nextButton = document.getElementById("nextButton");
+  const emailButton = document.getElementById("emailButton");
+
+  if (nextButton) {
+    nextButton.disabled = inCorso;
+    nextButton.textContent = inCorso ? "Salvataggio..." : (currentStep === 4 ? "Concludi" : "Avanti");
+  }
+
+  if (emailButton) {
+    emailButton.disabled = inCorso;
+    emailButton.textContent = inCorso ? "Salvataggio..." : "Prepara invio pratica";
+  }
 }
 
 function valoreMail(value) {
